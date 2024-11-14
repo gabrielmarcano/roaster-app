@@ -1,13 +1,13 @@
-import { Redirect, Tabs } from "expo-router";
-import React from "react";
+import { Redirect, Tabs } from 'expo-router';
+import React from 'react';
 
-import { ThemedText } from "@/components/ThemedText";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { ThemedText } from '@/components/ThemedText';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
-import { useSession } from "@/contexts/ctx";
-import TabBar from "@/components/ui/TabBar";
-import TabsHeader from "@/components/ui/TabsHeader";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSession } from '@/contexts/ctx';
+import TabBar from '@/components/ui/TabBar';
+import TabsHeader from '@/components/ui/TabsHeader';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -29,7 +29,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-    tabBar={(props) => <TabBar {...props} />}
+      tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
         tabBarHideOnKeyboard: true,
         header: (props) => <TabsHeader navProps={props} children={undefined} />,
@@ -38,7 +38,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: 'Home',
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}
@@ -51,7 +51,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: "Explore",
+          title: 'Explore',
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}
@@ -64,7 +64,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: "Dashboard",
+          title: 'Dashboard',
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}

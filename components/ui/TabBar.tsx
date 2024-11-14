@@ -38,8 +38,8 @@ const TabBar = (props: BottomTabBarProps) => (
         typeof options.tabBarLabel === 'string'
           ? options.tabBarLabel
           : options.title !== undefined
-          ? options.title
-          : route.name;
+            ? options.title
+            : route.name;
 
       return label;
     }}

@@ -40,7 +40,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
         },
         session,
         isLoading,
-      }}>
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

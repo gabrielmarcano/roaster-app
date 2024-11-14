@@ -24,7 +24,6 @@ import { useEffect } from 'react';
 import { SessionProvider } from '@/contexts/ctx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-
 // Query Client
 const queryClient = new QueryClient();
 
@@ -69,12 +68,12 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <PaperProvider theme={paperTheme}>
           {/* <ThemeProvider value={paperTheme as unknown as ReactNavigation.Theme}> */}
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-              <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-            </Stack>
-            <StatusBar style="auto" />
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+          </Stack>
+          <StatusBar style="auto" />
           {/* </ThemeProvider> */}
         </PaperProvider>
       </QueryClientProvider>

@@ -17,10 +17,7 @@ export default function SignIn() {
       style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
     >
       <ThemedView style={styles.textInputContainer}>
-        <TextInput
-          value={ip}
-          onChangeText={(text) => setIp(text)}
-        />
+        <TextInput value={ip} onChangeText={(text) => setIp(text)} />
         <HelperText type="info">e.g. 192.168.1.10</HelperText>
       </ThemedView>
       <ThemedView>

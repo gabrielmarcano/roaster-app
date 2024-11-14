@@ -1,10 +1,10 @@
-import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
-import { getHeaderTitle } from '@react-navigation/elements'
-import React from 'react'
-import { Appbar, AppbarProps } from 'react-native-paper'
+import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
+import { getHeaderTitle } from '@react-navigation/elements';
+import React from 'react';
+import { Appbar, AppbarProps } from 'react-native-paper';
 
 interface TabsHeaderProps extends AppbarProps {
-  navProps: BottomTabHeaderProps
+  navProps: BottomTabHeaderProps;
 }
 
 const TabsHeader = (props: TabsHeaderProps) => (
@@ -19,10 +19,10 @@ const TabsHeader = (props: TabsHeaderProps) => (
 
     {props.navProps.options.headerRight
       ? props.navProps.options.headerRight({
-        canGoBack: true
-      })
+          canGoBack: true,
+        })
       : undefined}
   </Appbar.Header>
-)
+);
 
-export default TabsHeader
+export default TabsHeader;

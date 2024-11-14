@@ -18,7 +18,8 @@ export default function TabThreeScreen() {
           name="rectangle.3.offgrid"
           style={styles.headerImage}
         />
-      }>
+      }
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Dasboard</ThemedText>
       </ThemedView>
