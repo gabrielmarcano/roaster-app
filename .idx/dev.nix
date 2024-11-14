@@ -20,17 +20,20 @@
       };
       # Runs when a workspace restarted
       onStart = {
-        connect-device = ''
-          adb -s localhost:5554 wait-for-device 
-        '';
-        android = ''
-          npm run android -- --port 5554 --tunnel
+        # connect-device = ''
+        #   adb -s localhost:5554 wait-for-device 
+        # '';
+        # android = ''
+        #   npm run android -- --port 5554 --tunnel
+        # '';
+        tunnel = ''
+          npm start -- --port 5554 --tunnel
         '';
       };
     };
     # Enable previews and customize configuration
     previews = {
-      enable = true;
+      enable = false; # Using expo go
       previews = {
         web = {
           command = [ "npm" "run" "web" "--" "--port" "$PORT" ];
