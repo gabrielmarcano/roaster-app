@@ -9,7 +9,6 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import {
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
-  ThemeProvider,
 } from '@react-navigation/native';
 import {
   MD3DarkTheme,
@@ -23,6 +22,8 @@ import merge from 'deepmerge';
 import { useEffect } from 'react';
 import { SessionProvider } from '@/contexts/ctx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useReactQueryDevTools } from '@dev-plugins/react-query';
+
 
 // Query Client
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const CombinedLightTheme = merge(LightTheme, customLightTheme);
 const CombinedDarkTheme = merge(DarkTheme, customDarkTheme);
 
 export default function RootLayout() {
+  useReactQueryDevTools(queryClient)
   const colorScheme = useColorScheme();
 
   // Merge themes
@@ -67,14 +69,12 @@ export default function RootLayout() {
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <PaperProvider theme={paperTheme}>
-          {/* <ThemeProvider value={paperTheme as unknown as ReactNavigation.Theme}> */}
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
             <Stack.Screen name="sign-in" options={{ headerShown: false }} />
           </Stack>
           <StatusBar style="auto" />
-          {/* </ThemeProvider> */}
         </PaperProvider>
       </QueryClientProvider>
     </SessionProvider>

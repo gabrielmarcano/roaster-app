@@ -1,12 +1,13 @@
 import { router } from 'expo-router';
-import { Text, TextInput, Button, HelperText } from 'react-native-paper';
-import { ThemedView } from '@/components/ThemedView';
+import { useState } from 'react';
+import { StyleSheet } from 'react-native';
 
+import { TextInput, Button, HelperText } from 'react-native-paper';
+import { ThemedView } from '@/components/ThemedView';
 import { useSession } from '@/contexts/ctx';
 
-import { useState } from 'react';
 
-import { StyleSheet } from 'react-native';
+import client from '@/api/client';
 
 export default function SignIn() {
   const [ip, setIp] = useState<string>('');
@@ -24,9 +25,14 @@ export default function SignIn() {
         <Button
           mode="contained"
           onPress={() => {
+            if (ip.length === 0) return
+
             signIn(ip);
             // Navigate after signing in. You may want to tweak this to ensure sign-in is
             // successful before navigating.
+            
+            // if (!client.defaults.baseURL?.includes('http')) return
+
             router.replace('/(tabs)');
           }}
         >
@@ -39,7 +45,6 @@ export default function SignIn() {
 
 const styles = StyleSheet.create({
   textInputContainer: {
-    // flexDirection: 'row',
     width: '60%',
     marginBottom: 30,
   },

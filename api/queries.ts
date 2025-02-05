@@ -1,21 +1,51 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { getReadings, updateMotors, updateTimer } from '@/api/api';
+import {
+  getControllerConfig,
+  manageController,
+  resetMicro,
+  updateControllerConfig,
+  updateTimer,
+} from '@/api/api';
 
-export const useReadings = (config?: object) =>
-  useQuery({ queryKey: ['fetchReadings'], queryFn: getReadings, ...config });
-
-export const useUpdateTimer = () =>
+export const useUpdateTimer = (config?: object) =>
   useMutation({
     mutationFn: updateTimer,
+    ...config
     // onSuccess: () => {
     //     queryClient.invalidateQueries(['fetchReadings']);
     // },
   });
 
-export const useUpdateMotors = () =>
+export const useGetControllerConfig = (config?: object) =>
+  useQuery({
+    queryKey: ['fetchControllerConfig'],
+    queryFn: getControllerConfig,
+    ...config,
+  });
+
+export const useUpdateControllerConfig = (config?: object) =>
   useMutation({
-    mutationFn: updateMotors,
+    mutationFn: updateControllerConfig,
+    ...config
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(['fetchReadings']);
+    // },
+  });
+
+export const useManageController = (config?: object) =>
+  useMutation({
+    mutationFn: manageController,
+    ...config
+    // onSuccess: () => {
+    //     queryClient.invalidateQueries(['fetchReadings']);
+    // },
+  });
+
+export const useResetMicro = (config?: object) =>
+  useMutation({
+    mutationFn: resetMicro,
+    ...config
     // onSuccess: () => {
     //     queryClient.invalidateQueries(['fetchReadings']);
     // },

@@ -2,7 +2,6 @@ import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 
 import { ThemedText } from '@/components/ThemedText';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 import { useSession } from '@/contexts/ctx';
 import TabBar from '@/components/ui/TabBar';
@@ -10,8 +9,6 @@ import TabsHeader from '@/components/ui/TabsHeader';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   const { session, isLoading } = useSession();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
@@ -31,6 +28,7 @@ export default function TabLayout() {
     <Tabs
       tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
+        // headerShown: false,
         tabBarHideOnKeyboard: true,
         header: (props) => <TabsHeader navProps={props} children={undefined} />,
       }}
@@ -38,7 +36,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Dashboard',
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}
@@ -49,22 +47,37 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="controllers"
         options={{
-          title: 'Explore',
+          title: 'Controllers',
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}
               size={24}
-              name={props.focused ? 'test-tube' : 'test-tube-empty'}
+              name={
+                props.focused ? 'toggle-switch' : 'toggle-switch-off-outline'
+              }
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="dashboard"
+        name="timer"
         options={{
-          title: 'Dashboard',
+          title: 'Timer',
+          tabBarIcon: (props) => (
+            <MaterialCommunityIcons
+              {...props}
+              size={24}
+              name={props.focused ? 'timer-settings' : 'timer-settings-outline'}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}

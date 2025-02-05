@@ -33,17 +33,17 @@
     };
     # Enable previews and customize configuration
     previews = {
-      enable = false; # Using expo go
+      enable = true; # Using expo go
       previews = {
         web = {
           command = [ "npm" "run" "web" "--" "--port" "$PORT" ];
           manager = "web";
         };
-        android = {
-          # noop
-          command = [ "tail" "-f" "/dev/null" ];
-          manager = "web";
-        };
+        # android = {
+        #   # noop
+        #   command = [ "tail" "-f" "/dev/null" ];
+        #   manager = "web";
+        # };
       };
     };
   };

@@ -1,5 +1,6 @@
 import { useContext, createContext, type PropsWithChildren } from 'react';
 import { useStorageState } from './useStorageState';
+import { configure } from '@/api/client';
 
 const AuthContext = createContext<{
   signIn: (sessionId: string) => void;
@@ -28,11 +29,21 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
 
+  if (session) {
+    configure({
+      baseURL: `http://${session}`,
+    });
+  }
+
   return (
     <AuthContext.Provider
       value={{
         signIn: (ip) => {
           // Perform sign-in logic here
+          configure({
+            baseURL: `http://${ip}`,
+          });
+
           setSession(ip);
         },
         signOut: () => {
