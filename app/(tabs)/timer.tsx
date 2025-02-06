@@ -1,86 +1,37 @@
-import { CustomEvents } from '@/api/types';
-import { useSession } from '@/contexts/ctx';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ActivityIndicator, Button, Text } from 'react-native-paper';
 
-import EventSource from 'react-native-sse';
+import { useGetControllerConfig } from '@/api/queries';
+import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
+import { useSession } from '@/contexts/ctx';
+
+import { useState } from 'react';
 
 export default function TimerScreen() {
   const { session } = useSession();
-  const [message, setMessage] = useState('');
-  const [sensors, setSensors] = useState('');
-  const [time, setTime] = useState('');
-  const [states, setStates] = useState('');
-  const [controller, setController] = useState('');
 
-  useEffect(() => {
-    const eventSource = new EventSource<CustomEvents>(`http://192.168.1.90/events`);
+  const [refreshing, setRefreshing] = useState(false);
 
-    eventSource.addEventListener('open', (event) => {
-      console.log('Open SSE connection.');
-    });
+  const {
+    data: controllerConfigData,
+    isLoading: isControllerConfigLoading,
+    refetch,
+  } = useGetControllerConfig();
 
-    eventSource.addEventListener('message', (event) => {
-      console.log('New message event:', event.data);
-      if (event.data) {
-        setMessage(event.data);
-      }
-    });
+  useRefreshOnFocus(refetch);
 
-    eventSource.addEventListener('sensors', (event) => {
-      console.log('New sensors event:', event.data);
-      if (event.data) {
-        setSensors(event.data);
-      }
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetch();
+    setRefreshing(false);
+  };
 
-    });
-
-    eventSource.addEventListener('time', (event) => {
-      console.log('New time event:', event.data);
-      if (event.data) {
-        setTime(event.data);
-      }
-    });
-
-    eventSource.addEventListener('states', (event) => {
-      console.log('New states event:', event.data);
-      if (event.data) {
-        setStates(event.data);
-      }
-    });
-
-    eventSource.addEventListener('controller', (event) => {
-      console.log('New controller event:', event.data);
-      if (event.data) {
-        setController(event.data);
-      }
-    });
-
-    eventSource.addEventListener('error', (event) => {
-      if (event.type === 'error') {
-        console.error('Connection error:', event.message);
-      } else if (event.type === 'exception') {
-        console.error('Error:', event.message, event.error);
-      }
-    });
-
-    eventSource.addEventListener('close', (event) => {
-      console.log('Close SSE connection.');
-    });
-
-    // Clean up the EventSource on component unmount
-    return () => {
-      eventSource.close();
-    };
-  }, [session]);
-
-  if (!session)
+  if (isControllerConfigLoading)
     return (
       <View
         style={{
-          ...styles.content,
+          ...styles.wrapper,
           justifyContent: 'center',
           alignItems: 'center',
         }}
@@ -90,40 +41,44 @@ export default function TimerScreen() {
     );
 
   return (
-    <View style={styles.content}>
-      <Text variant="displaySmall">
-        message event: {message}
-      </Text>
-      <Text variant="displaySmall">
-        sensors event: {sensors}
-      </Text>
-      <Text variant="displaySmall">
-        time event: {time}
-      </Text>
-      <Text variant="displaySmall">
-        states event: {states}
-      </Text>
-      <Text variant="displaySmall">
-        controller event: {controller}
-      </Text>
-      <Button
-        mode="contained"
-        onPress={() => {
-          console.log('clicked');
-        }}
+    <View style={styles.wrapper}>
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
-        Click
-      </Button>
+        <Text variant="displaySmall">
+          Mode: {controllerConfigData?.data.mode}
+        </Text>
+        <Text variant="displaySmall">
+          str_temperature: {controllerConfigData?.data.starting_temperature}
+        </Text>
+        <Text variant="displaySmall">
+          time: {controllerConfigData?.data.time}
+        </Text>
+        <Button
+          mode="contained"
+          onPress={() => {
+            console.log('clicked');
+            console.log(controllerConfigData?.data);
+            console.log(session);
+          }}
+        >
+          Click
+        </Button>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  content: {
+  wrapper: {
     flex: 1,
-    padding: 32,
-    gap: 16,
-    overflow: 'hidden',
     backgroundColor: '#353636',
+  },
+  contentContainer: {
+    padding: 16,
+    gap: 16,
   },
 });

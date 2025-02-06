@@ -1,92 +1,140 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { CustomEvents } from '@/api/types';
 import { useSession } from '@/contexts/ctx';
+import { useEffect, useState } from 'react';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+
+import { ActivityIndicator, Button, Text } from 'react-native-paper';
+
+import EventSource from 'react-native-sse';
 
 export default function HomeScreen() {
-  const { session, signOut } = useSession();
+  const { session } = useSession();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [eventSource, setEventSource] =
+    useState<EventSource<CustomEvents> | null>(null);
+  const [sensors, setSensors] = useState('');
+  const [time, setTime] = useState('');
+  const [states, setStates] = useState('');
+  const [controller, setController] = useState('');
+
+  useEffect(() => {
+    const es = new EventSource<CustomEvents>(`http://192.168.1.90/events`);
+
+    setEventSource(es);
+
+    es.addEventListener('open', (event) => {
+      console.log('Open SSE connection.');
+    });
+
+    es.addEventListener('sensors', (event) => {
+      console.log('New sensors event:', event.data);
+      if (event.data) {
+        setSensors(event.data);
+      }
+    });
+
+    es.addEventListener('time', (event) => {
+      console.log('New time event:', event.data);
+      if (event.data) {
+        setTime(event.data);
+      }
+    });
+
+    es.addEventListener('states', (event) => {
+      console.log('New states event:', event.data);
+      if (event.data) {
+        setStates(event.data);
+      }
+    });
+
+    es.addEventListener('controller', (event) => {
+      console.log('New controller event:', event.data);
+      if (event.data) {
+        setController(event.data);
+      }
+    });
+
+    es.addEventListener('error', (event) => {
+      if (event.type === 'error') {
+        console.error('Connection error:', event.message);
+      } else if (event.type === 'exception') {
+        console.error('Error:', event.message, event.error);
+      }
+    });
+
+    es.addEventListener('close', (event) => {
+      console.log('Close SSE connection.');
+    });
+
+    // Clean up the EventSource on component unmount
+    return () => {
+      es.close();
+      setEventSource(null);
+    };
+  }, [session]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    eventSource?.close();
+    eventSource?.open();
+    setRefreshing(false);
+  };
+
+  if (!session)
+    return (
+      <View
+        style={{
+          ...styles.wrapper,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ActivityIndicator animating={true} size="large" />
+      </View>
+    );
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{' '}
-          to see changes. Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this
-          starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText>{' '}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{' '}
-          directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 4: Sign out</ThemedText>
-        <ThemedText
+    <View style={styles.wrapper}>
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <Text variant="displaySmall">sensors event: {sensors}</Text>
+        <Text variant="displaySmall">time event: {time}</Text>
+        <Text variant="displaySmall">states event: {states}</Text>
+        <Text variant="displaySmall">controller event: {controller}</Text>
+        <Button
+          mode="contained"
           onPress={() => {
-            // The `app/(app)/_layout.tsx` will redirect to the sign-in screen.
-            signOut();
+            eventSource?.close();
           }}
         >
-          Sign out from this session: {session}
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+          Close event source
+        </Button>
+        <Button
+          mode="contained"
+          onPress={() => {
+            console.log('clicked');
+          }}
+        >
+          Click
+        </Button>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#353636',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  contentContainer: {
+    padding: 16,
+    gap: 16,
   },
 });
