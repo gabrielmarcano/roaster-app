@@ -7,47 +7,31 @@ import {
   updateControllerConfig,
   updateTimer,
 } from '@/api/api';
-import { IControllerConfig } from './types';
+import { IControllerConfig, IManageController, IUpdateTimer } from './types';
 
-export const useUpdateTimer = (config?: object) =>
+export const useUpdateTimer = () =>
   useMutation({
-    mutationFn: updateTimer,
-    ...config
-    // onSuccess: () => {
-    //     queryClient.invalidateQueries(['fetchReadings']);
-    // },
+    mutationFn: (body: IUpdateTimer) => updateTimer(body),
   });
 
-export const useGetControllerConfig = (config?: object) =>
+export const useControllerConfig = () =>
   useQuery({
     queryKey: ['fetchControllerConfig'],
     queryFn: getControllerConfig,
-    ...config,
   });
 
-export const useUpdateControllerConfig = (body: Partial<IControllerConfig>, config?: object) =>
+export const useUpdateControllerConfig = () =>
   useMutation({
-    mutationFn: () => updateControllerConfig(body),
-    ...config
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries(['fetchReadings']);
-    // },
+    mutationFn: (body: Partial<IControllerConfig>) =>
+      updateControllerConfig(body),
   });
 
-export const useManageController = (config?: object) =>
+export const useManageController = () =>
   useMutation({
-    mutationFn: manageController,
-    ...config
-    // onSuccess: () => {
-    //     queryClient.invalidateQueries(['fetchReadings']);
-    // },
+    mutationFn: (body: IManageController) => manageController(body),
   });
 
-export const useResetMicro = (config?: object) =>
+export const useResetMicro = () =>
   useMutation({
-    mutationFn: resetMicro,
-    ...config
-    // onSuccess: () => {
-    //     queryClient.invalidateQueries(['fetchReadings']);
-    // },
+    mutationFn: () => resetMicro(),
   });

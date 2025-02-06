@@ -2,7 +2,7 @@ import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ActivityIndicator, Button, Text } from 'react-native-paper';
 
-import { useGetControllerConfig } from '@/api/queries';
+import { useControllerConfig } from '@/api/queries';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
 import { useSession } from '@/contexts/ctx';
 
@@ -17,7 +17,7 @@ export default function TimerScreen() {
     data: controllerConfigData,
     isLoading: isControllerConfigLoading,
     refetch,
-  } = useGetControllerConfig();
+  } = useControllerConfig();
 
   useRefreshOnFocus(refetch);
 

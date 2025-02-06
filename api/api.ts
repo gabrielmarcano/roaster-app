@@ -5,9 +5,6 @@ import {
   IUpdateTimer,
   IControllerConfig,
   IManageController,
-  IControllerStatus,
-  // IMotorStates,
-  // IReadings,
 } from '@/api/types';
 import client from '@/api/client';
 
@@ -25,7 +22,7 @@ export const updateControllerConfig = (
 
 export const manageController = (
   body: IManageController,
-): Promise<AxiosResponse<IControllerStatus>> =>
+): Promise<AxiosResponse<IControllerConfig>> =>
   client.post('/controller', body);
 
 export const resetMicro = (): Promise<AxiosResponse<void>> =>
@@ -83,7 +80,6 @@ export const resetMicro = (): Promise<AxiosResponse<void>> =>
 //   ...mockAxiosResponse,
 //   data: { ...data, ...body },
 // });
-
 
 // export const updateTimer = (
 //   body: IUpdateTimer,

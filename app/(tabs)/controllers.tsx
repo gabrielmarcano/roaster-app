@@ -10,32 +10,35 @@ import {
 } from 'react-native-paper';
 
 import {
-  useGetControllerConfig,
+  useControllerConfig,
+  useManageController,
   useUpdateControllerConfig,
 } from '@/api/queries';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function ControllersScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
-  const [mode, setMode] = useState<'cafe' | 'cacao' | 'mani' | undefined>(
-    undefined,
-  );
-  const [startingTemperature, setStartingTemperature] = useState<number | undefined>(0);
-  const [time, setTime] = useState<number | undefined>(0);
+  const [mode, setMode] = useState<string | undefined>(undefined);
+  const [startingTemperature, setStartingTemperature] = useState<
+    string | undefined
+  >(undefined);
+  const [time, setTime] = useState<string | undefined>(undefined);
+
+  const queryClient = useQueryClient();
 
   const {
     data: controllerConfigData,
     isLoading: isControllerConfigLoading,
     refetch,
-  } = useGetControllerConfig();
+  } = useControllerConfig();
 
-  const updateControllerConfig = useUpdateControllerConfig({
-    mode,
-    starting_temperature: startingTemperature,
-    time,
-  });
+  const updateControllerConfig = useUpdateControllerConfig();
+
+  const manageController = useManageController();
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -44,27 +47,49 @@ export default function ControllersScreen() {
   };
 
   const onSave = () => {
-    updateControllerConfig.mutate();
+    console.log(mode, startingTemperature, time);
+
+    if (mode !== 'cafe' && mode !== 'cacao' && mode !== 'mani')
+      setMode(undefined);
+    if (isNaN(Number(startingTemperature))) setStartingTemperature(undefined);
+    if (isNaN(Number(time))) setTime(undefined);
+
+    updateControllerConfig.mutate(
+      {
+        mode: mode as 'cafe' | 'cacao' | 'mani' | undefined,
+        starting_temperature: Number(startingTemperature),
+        time: Number(time),
+      },
+      {
+        onSuccess() {
+          queryClient.invalidateQueries({
+            queryKey: ['fetchControllerConfig'],
+          });
+        },
+      },
+    );
   };
 
   const onToggleSwitch = () => {
-    return setIsSwitchOn(!isSwitchOn);
+    manageController.mutate(
+      {
+        action: isSwitchOn ? 'deactivate' : 'activate',
+      },
+      {
+        onSuccess() {
+          queryClient.invalidateQueries({
+            queryKey: ['fetchControllerConfig'],
+          });
+        },
+      },
+    );
   };
 
   useRefreshOnFocus(refetch);
 
-  if (isControllerConfigLoading)
-    return (
-      <View
-        style={{
-          ...styles.wrapper,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <ActivityIndicator animating={true} size="large" />
-      </View>
-    );
+  useEffect(() => {
+    setIsSwitchOn(controllerConfigData?.data.status === 'on' ? true : false);
+  }, [controllerConfigData]);
 
   return (
     <View style={styles.wrapper}>
@@ -77,45 +102,60 @@ export default function ControllersScreen() {
         <View style={styles.textInputContainer}>
           <TextInput
             value={mode}
-            onChangeText={(text) =>
-              setMode(
-                ['cafe', 'cacao', 'mani'].includes(text)
-                  ? (text as 'cafe' | 'cacao' | 'mani')
-                  : undefined,
-              )
-            }
+            onChangeText={(text) => setMode(text.toLowerCase())}
           />
           <HelperText type="info">e.g. cafe</HelperText>
         </View>
         <View style={styles.textInputContainer}>
           <TextInput
-            value={String(startingTemperature)}
-            onChangeText={(text) =>
-              setStartingTemperature(text ? Number(text) : undefined)
-            }
+            value={startingTemperature}
+            onChangeText={(text) => setStartingTemperature(text)}
           />
           <HelperText type="info">e.g. 120</HelperText>
         </View>
         <View style={styles.textInputContainer}>
-          <TextInput
-            value={String(time)}
-            onChangeText={(text) => setTime(text ? Number(text) : undefined)}
-          />
+          <TextInput value={time} onChangeText={(text) => setTime(text)} />
           <HelperText type="info">e.g. 40</HelperText>
         </View>
-        <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />;
-        <Button mode="contained" onPress={onSave}>
+        <Switch
+          value={isSwitchOn}
+          onValueChange={onToggleSwitch}
+          disabled={isControllerConfigLoading}
+        />
+        ;
+        <Button
+          mode="contained"
+          onPress={onSave}
+          disabled={isControllerConfigLoading}
+        >
           Save controller configuration
         </Button>
-        <Text variant="displaySmall">
-          Mode: {controllerConfigData?.data.mode}
-        </Text>
-        <Text variant="displaySmall">
-          str_temperature: {controllerConfigData?.data.starting_temperature}
-        </Text>
-        <Text variant="displaySmall">
-          time: {controllerConfigData?.data.time}
-        </Text>
+        {isControllerConfigLoading ? (
+          <View
+            style={{
+              paddingTop: 32,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <ActivityIndicator animating={true} size="large" />
+          </View>
+        ) : (
+          <>
+            <Text variant="displaySmall">
+              Mode: {controllerConfigData?.data.mode}
+            </Text>
+            <Text variant="displaySmall">
+              str_temperature: {controllerConfigData?.data.starting_temperature}
+            </Text>
+            <Text variant="displaySmall">
+              time: {controllerConfigData?.data.time}
+            </Text>
+            <Text variant="displaySmall">
+              status: {controllerConfigData?.data.status}
+            </Text>
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -133,6 +173,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textInputContainer: {
-    width: '80%',
+    width: '90%',
   },
 });

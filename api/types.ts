@@ -33,16 +33,11 @@ export interface IControllerConfig {
   mode: 'cafe' | 'cacao' | 'mani';
   starting_temperature: number;
   time: number;
+  status: 'on' | 'off';
 }
 
 export interface IManageController {
   action: 'activate' | 'deactivate' | 'stop';
 }
 
-export interface IControllerStatus {
-  status: 'on' | 'off';
-}
-
-export interface IController extends IControllerConfig, IControllerStatus {}
-
-export type CustomEvents = "sensors" | "time" | "states" | "controller"
+export type CustomEvents = 'sensors' | 'time' | 'states' | 'controller';
