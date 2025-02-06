@@ -20,7 +20,7 @@ export default function HomeScreen() {
   const [controller, setController] = useState('');
 
   useEffect(() => {
-    const es = new EventSource<CustomEvents>(`http://192.168.1.90/events`);
+    const es = new EventSource<CustomEvents>(`http://${session}/events`);
 
     setEventSource(es);
 

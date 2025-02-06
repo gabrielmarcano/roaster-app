@@ -6,8 +6,7 @@ import { TextInput, Button, HelperText } from 'react-native-paper';
 import { ThemedView } from '@/components/ThemedView';
 import { useSession } from '@/contexts/ctx';
 
-
-import client from '@/api/client';
+// import client from '@/api/client';
 
 export default function SignIn() {
   const [ip, setIp] = useState<string>('');
@@ -25,12 +24,12 @@ export default function SignIn() {
         <Button
           mode="contained"
           onPress={() => {
-            if (ip.length === 0) return
+            if (ip.length === 0) return;
 
             signIn(ip);
             // Navigate after signing in. You may want to tweak this to ensure sign-in is
             // successful before navigating.
-            
+
             // if (!client.defaults.baseURL?.includes('http')) return
 
             router.replace('/(tabs)');

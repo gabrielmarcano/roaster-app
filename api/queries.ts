@@ -7,6 +7,7 @@ import {
   updateControllerConfig,
   updateTimer,
 } from '@/api/api';
+import { IControllerConfig } from './types';
 
 export const useUpdateTimer = (config?: object) =>
   useMutation({
@@ -24,9 +25,9 @@ export const useGetControllerConfig = (config?: object) =>
     ...config,
   });
 
-export const useUpdateControllerConfig = (config?: object) =>
+export const useUpdateControllerConfig = (body: Partial<IControllerConfig>, config?: object) =>
   useMutation({
-    mutationFn: updateControllerConfig,
+    mutationFn: () => updateControllerConfig(body),
     ...config
     // onSuccess: () => {
     //   queryClient.invalidateQueries(['fetchReadings']);

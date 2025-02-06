@@ -1,16 +1,29 @@
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { ActivityIndicator, Button, Text } from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Button,
+  HelperText,
+  Switch,
+  Text,
+  TextInput,
+} from 'react-native-paper';
 
-import { useGetControllerConfig } from '@/api/queries';
+import {
+  useGetControllerConfig,
+  useUpdateControllerConfig,
+} from '@/api/queries';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
-import { useSession } from '@/contexts/ctx';
 import { useState } from 'react';
 
 export default function ControllersScreen() {
-  const { session } = useSession();
-
   const [refreshing, setRefreshing] = useState(false);
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const [mode, setMode] = useState<'cafe' | 'cacao' | 'mani' | undefined>(
+    undefined,
+  );
+  const [startingTemperature, setStartingTemperature] = useState<number | undefined>(0);
+  const [time, setTime] = useState<number | undefined>(0);
 
   const {
     data: controllerConfigData,
@@ -18,13 +31,27 @@ export default function ControllersScreen() {
     refetch,
   } = useGetControllerConfig();
 
-  useRefreshOnFocus(refetch);
+  const updateControllerConfig = useUpdateControllerConfig({
+    mode,
+    starting_temperature: startingTemperature,
+    time,
+  });
 
   const onRefresh = () => {
     setRefreshing(true);
     refetch();
     setRefreshing(false);
   };
+
+  const onSave = () => {
+    updateControllerConfig.mutate();
+  };
+
+  const onToggleSwitch = () => {
+    return setIsSwitchOn(!isSwitchOn);
+  };
+
+  useRefreshOnFocus(refetch);
 
   if (isControllerConfigLoading)
     return (
@@ -47,6 +74,39 @@ export default function ControllersScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
+        <View style={styles.textInputContainer}>
+          <TextInput
+            value={mode}
+            onChangeText={(text) =>
+              setMode(
+                ['cafe', 'cacao', 'mani'].includes(text)
+                  ? (text as 'cafe' | 'cacao' | 'mani')
+                  : undefined,
+              )
+            }
+          />
+          <HelperText type="info">e.g. cafe</HelperText>
+        </View>
+        <View style={styles.textInputContainer}>
+          <TextInput
+            value={String(startingTemperature)}
+            onChangeText={(text) =>
+              setStartingTemperature(text ? Number(text) : undefined)
+            }
+          />
+          <HelperText type="info">e.g. 120</HelperText>
+        </View>
+        <View style={styles.textInputContainer}>
+          <TextInput
+            value={String(time)}
+            onChangeText={(text) => setTime(text ? Number(text) : undefined)}
+          />
+          <HelperText type="info">e.g. 40</HelperText>
+        </View>
+        <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />;
+        <Button mode="contained" onPress={onSave}>
+          Save controller configuration
+        </Button>
         <Text variant="displaySmall">
           Mode: {controllerConfigData?.data.mode}
         </Text>
@@ -56,16 +116,6 @@ export default function ControllersScreen() {
         <Text variant="displaySmall">
           time: {controllerConfigData?.data.time}
         </Text>
-        <Button
-          mode="contained"
-          onPress={() => {
-            console.log('clicked');
-            console.log(controllerConfigData?.data);
-            console.log(session);
-          }}
-        >
-          Click
-        </Button>
       </ScrollView>
     </View>
   );
@@ -79,5 +129,10 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
     gap: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textInputContainer: {
+    width: '80%',
   },
 });
