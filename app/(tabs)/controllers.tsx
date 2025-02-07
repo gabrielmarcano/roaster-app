@@ -3,9 +3,9 @@ import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
   Button,
+  DataTable,
   HelperText,
   Switch,
-  Text,
   TextInput,
 } from 'react-native-paper';
 
@@ -142,18 +142,29 @@ export default function ControllersScreen() {
           </View>
         ) : (
           <>
-            <Text variant="displaySmall">
-              Mode: {controllerConfigData?.data.mode}
-            </Text>
-            <Text variant="displaySmall">
-              str_temperature: {controllerConfigData?.data.starting_temperature}
-            </Text>
-            <Text variant="displaySmall">
-              time: {controllerConfigData?.data.time}
-            </Text>
-            <Text variant="displaySmall">
-              status: {controllerConfigData?.data.status}
-            </Text>
+            <DataTable>
+              <DataTable.Header>
+                <DataTable.Title>Status</DataTable.Title>
+                <DataTable.Title>Mode</DataTable.Title>
+                <DataTable.Title numeric>Temperature</DataTable.Title>
+                <DataTable.Title numeric>Time</DataTable.Title>
+              </DataTable.Header>
+
+              <DataTable.Row>
+                <DataTable.Cell>
+                  {controllerConfigData?.data.status}
+                </DataTable.Cell>
+                <DataTable.Cell>
+                  {controllerConfigData?.data.mode ?? '-'}
+                </DataTable.Cell>
+                <DataTable.Cell numeric>
+                  {controllerConfigData?.data.starting_temperature}
+                </DataTable.Cell>
+                <DataTable.Cell numeric>
+                  {controllerConfigData?.data.time}
+                </DataTable.Cell>
+              </DataTable.Row>
+            </DataTable>
           </>
         )}
       </ScrollView>
@@ -165,6 +176,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#353636',
+    paddingTop: 32,
   },
   contentContainer: {
     padding: 16,
