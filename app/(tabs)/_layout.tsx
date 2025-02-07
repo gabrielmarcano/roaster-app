@@ -8,7 +8,7 @@ import TabBar from '@/components/ui/TabBar';
 import TabsHeader from '@/components/ui/TabsHeader';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import i18n from '@/translations';
+import i18n from '@/i18n';
 
 export default function TabLayout() {
   const { session, isLoading } = useSession();

@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
-import i18n from '@/translations';
+import i18n from '@/i18n';
 
 export default function ControllersScreen() {
   const [refreshing, setRefreshing] = useState(false);

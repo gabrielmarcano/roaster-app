@@ -114,7 +114,7 @@ import { Button, Text } from 'react-native-paper';
 
 import { useSession } from '@/contexts/ctx';
 
-import i18n from '@/translations';
+import i18n from '@/i18n';
 
 export default function SettingsScreen() {
   const { session, signOut } = useSession();

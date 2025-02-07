@@ -6,7 +6,7 @@ import { TextInput, Button, HelperText } from 'react-native-paper';
 import { ThemedView } from '@/components/ThemedView';
 import { useSession } from '@/contexts/ctx';
 
-import i18n from '@/translations';
+import i18n from '@/i18n';
 
 export default function SignIn() {
   const [ip, setIp] = useState<string>('');
