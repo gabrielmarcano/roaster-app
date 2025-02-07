@@ -1,39 +1,39 @@
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { LineChart, yAxisSides } from 'react-native-gifted-charts';
+import { LineChart } from 'react-native-gifted-charts';
 import { IDataChart } from '@/api/types';
 
-const TemperatureChart = (props: IDataChart) => {
+const HumidityChart = (props: IDataChart) => {
   return (
     <View
       style={{
         paddingVertical: 60,
-        paddingLeft: 20,
+        paddingLeft: 10,
         backgroundColor: '#1C1C1C',
       }}
     >
       <LineChart
-        overflowTop={1}
         areaChart
+        curved
         data={props.data}
-        width={330}
         hideDataPoints
-        spacing={10}
-        color="#00ff83"
-        thickness={2}
-        startFillColor="rgba(20,105,81,0.3)"
-        endFillColor="rgba(20,85,81,0.01)"
+        width={330}
+        spacing={48}
+        color="#56acce"
+        startFillColor="#56acce"
+        endFillColor="#56acce"
         startOpacity={0.9}
         endOpacity={0.2}
         initialSpacing={0}
-        noOfSections={6}
-        maxValue={400}
+        noOfSections={4}
+        maxValue={100}
         yAxisColor="white"
         yAxisThickness={0}
         rulesColor="gray"
         yAxisTextStyle={{ color: 'gray' }}
-        yAxisSide={yAxisSides.RIGHT}
+        yAxisLabelSuffix="%"
         xAxisColor="lightgray"
+        overflowTop={1}
         pointerConfig={{
           pointerStripHeight: 160,
           pointerStripWidth: 0,
@@ -62,7 +62,7 @@ const TemperatureChart = (props: IDataChart) => {
                   }}
                 >
                   <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                    {items[0].value + '°C'}
+                    {items[0].value + '%'}
                   </Text>
                 </View>
               </View>
@@ -74,4 +74,4 @@ const TemperatureChart = (props: IDataChart) => {
   );
 };
 
-export default TemperatureChart;
+export default HumidityChart;

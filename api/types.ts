@@ -1,3 +1,5 @@
+import { TextStyle } from 'react-native';
+
 export interface ISensor {
   temperature: number;
   humidity: number;
@@ -41,3 +43,12 @@ export interface IManageController {
 }
 
 export type CustomEvents = 'sensors' | 'time' | 'states' | 'controller';
+
+export interface IDataChart {
+  data: {
+    value: number;
+    timestamp: string;
+    label?: string;
+    labelTextStyle?: TextStyle;
+  }[];
+}

@@ -1,4 +1,5 @@
-import { CustomEvents } from '@/api/types';
+import { CustomEvents, IDataChart, ISensor } from '@/api/types';
+import HumidityChart from '@/components/HumidityChart';
 import TemperatureChart from '@/components/TemperatureChart';
 import { useSession } from '@/contexts/ctx';
 import { useEffect, useState } from 'react';
@@ -20,9 +21,47 @@ export default function HomeScreen() {
   const [states, setStates] = useState('');
   const [controller, setController] = useState('');
 
+  const [temperatureData, setTemperatureData] = useState<
+    IDataChart['data'] | []
+  >([]);
+  const [humidityData, setHumidityData] = useState<IDataChart['data'] | []>([]);
+
+  const handleTemperatureData = (data: ISensor) => {
+    setTemperatureData((prev) => [
+      ...prev,
+      {
+        value: data.temperature,
+        timestamp: new Date().toISOString(),
+        label:
+          prev.length % 8 === 3
+            ? data.temperature.toString() + '°C'
+            : undefined,
+        labelTextStyle:
+          prev.length % 8 === 3 ? { color: 'lightgray', width: 60 } : undefined,
+      },
+    ]);
+
+    setTemperatureData((prev) => (prev.length > 30 ? prev.slice(-30) : prev)); // TODO: adjust the number to the amount seen in the chart
+  };
+
+  const handleHumidityData = (data: ISensor) => {
+    setHumidityData((prev) => [
+      ...prev,
+      {
+        value: data.humidity,
+        timestamp: new Date().toISOString(),
+        label:
+          prev.length % 8 === 3 ? data.humidity.toString() + '%' : undefined,
+        labelTextStyle:
+          prev.length % 8 === 3 ? { color: 'lightgray', width: 60 } : undefined,
+      },
+    ]);
+
+    setHumidityData((prev) => (prev.length > 30 ? prev.slice(-30) : prev)); // TODO: adjust the number to the amount seen in the chart
+  };
+
   useEffect(() => {
     const es = new EventSource<CustomEvents>(`http://${session}/events`);
-    es.close();
 
     setEventSource(es);
 
@@ -31,28 +70,27 @@ export default function HomeScreen() {
     });
 
     es.addEventListener('sensors', (event) => {
-      console.log('New sensors event:', event.data);
       if (event.data) {
+        const data: ISensor = JSON.parse(event.data);
+        handleTemperatureData(data);
+        handleHumidityData(data);
         setSensors(event.data);
       }
     });
 
     es.addEventListener('time', (event) => {
-      console.log('New time event:', event.data);
       if (event.data) {
         setTime(event.data);
       }
     });
 
     es.addEventListener('states', (event) => {
-      console.log('New states event:', event.data);
       if (event.data) {
         setStates(event.data);
       }
     });
 
     es.addEventListener('controller', (event) => {
-      console.log('New controller event:', event.data);
       if (event.data) {
         setController(event.data);
       }
@@ -105,7 +143,8 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <TemperatureChart />
+        <TemperatureChart data={temperatureData} />
+        <HumidityChart data={humidityData} />
 
         <Text variant="displaySmall">sensors event: {sensors}</Text>
         <Text variant="displaySmall">time event: {time}</Text>
