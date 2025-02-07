@@ -6,7 +6,7 @@ import { TextInput, Button, HelperText } from 'react-native-paper';
 import { ThemedView } from '@/components/ThemedView';
 import { useSession } from '@/contexts/ctx';
 
-// import client from '@/api/client';
+import i18n from '@/translations';
 
 export default function SignIn() {
   const [ip, setIp] = useState<string>('');
@@ -35,7 +35,7 @@ export default function SignIn() {
             router.replace('/(tabs)');
           }}
         >
-          Start
+          {i18n.t('Start')}
         </Button>
       </ThemedView>
     </ThemedView>

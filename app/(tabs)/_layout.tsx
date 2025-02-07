@@ -8,12 +8,14 @@ import TabBar from '@/components/ui/TabBar';
 import TabsHeader from '@/components/ui/TabsHeader';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+import i18n from '@/translations';
+
 export default function TabLayout() {
   const { session, isLoading } = useSession();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
-    return <ThemedText>Loading...</ThemedText>;
+    return <ThemedText>{i18n.t('Loading')}...</ThemedText>;
   }
 
   // Only require authentication within the (app) group's layout as users
@@ -36,7 +38,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: i18n.t('Tabs.Dashboard'),
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}
@@ -49,7 +51,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="controllers"
         options={{
-          title: 'Controllers',
+          title: i18n.t('Tabs.Controllers'),
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}
@@ -64,7 +66,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="timer"
         options={{
-          title: 'Timer',
+          title: i18n.t('Tabs.Timer'),
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}
@@ -77,7 +79,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: i18n.t('Tabs.Settings'),
           tabBarIcon: (props) => (
             <MaterialCommunityIcons
               {...props}

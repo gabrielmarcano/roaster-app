@@ -6,6 +6,7 @@ import {
   DataTable,
   HelperText,
   Switch,
+  Text,
   TextInput,
 } from 'react-native-paper';
 
@@ -19,9 +20,13 @@ import { useEffect, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
+import i18n from '@/translations';
+
 export default function ControllersScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
+  // const [isSwitchOn, setIsSwitchOn] = useState(false);
+
   const [mode, setMode] = useState<string | undefined>(undefined);
   const [startingTemperature, setStartingTemperature] = useState<
     string | undefined
@@ -117,37 +122,50 @@ export default function ControllersScreen() {
           <TextInput value={time} onChangeText={(text) => setTime(text)} />
           <HelperText type="info">e.g. 40</HelperText>
         </View>
-        <Switch
-          value={isSwitchOn}
-          onValueChange={onToggleSwitch}
-          disabled={isControllerConfigLoading}
-        />
-        ;
         <Button
           mode="contained"
           onPress={onSave}
           disabled={isControllerConfigLoading}
         >
-          Save controller configuration
+          {i18n.t('Controller.Buttons.SaveControllerConfiguration')}
         </Button>
-        {isControllerConfigLoading ? (
-          <View
+        <View style={styles.switchContainer}>
+          <Text variant="labelLarge">
+            {i18n.t('Controller.Buttons.ActivateController')}:
+          </Text>
+          <Switch
+            value={isSwitchOn}
+            onValueChange={onToggleSwitch}
+            disabled={isControllerConfigLoading}
             style={{
-              paddingTop: 32,
-              justifyContent: 'center',
-              alignItems: 'center',
+              transform: [{ scaleX: 1.6 }, { scaleY: 1.6 }],
+              marginHorizontal: 24,
             }}
-          >
+          />
+        </View>
+        {isControllerConfigLoading ? (
+          <View style={styles.loadingContainer}>
             <ActivityIndicator animating={true} size="large" />
           </View>
         ) : (
           <>
             <DataTable>
               <DataTable.Header>
-                <DataTable.Title>Status</DataTable.Title>
-                <DataTable.Title>Mode</DataTable.Title>
-                <DataTable.Title numeric>Temperature</DataTable.Title>
-                <DataTable.Title numeric>Time</DataTable.Title>
+                <DataTable.Title>{i18n.t('Controller.Status')}</DataTable.Title>
+                <DataTable.Title>{i18n.t('Controller.Mode')}</DataTable.Title>
+                <View>
+                  <DataTable.Title
+                    numeric
+                    style={{
+                      width: 120,
+                    }}
+                  >
+                    {i18n.t('Controller.StartingTemperature')}
+                  </DataTable.Title>
+                </View>
+                <DataTable.Title numeric>
+                  {`${i18n.t('Controller.Time')} (s)`}
+                </DataTable.Title>
               </DataTable.Header>
 
               <DataTable.Row>
@@ -186,5 +204,16 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     width: '90%',
+  },
+  switchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    paddingTop: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -108,61 +108,22 @@
 //   },
 // });
 
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { ActivityIndicator, Button, Text } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 
-import { useControllerConfig } from '@/api/queries';
-import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
 import { useSession } from '@/contexts/ctx';
 
-import { useState } from 'react';
+import i18n from '@/translations';
 
 export default function SettingsScreen() {
   const { session, signOut } = useSession();
 
-  const [refreshing, setRefreshing] = useState(false);
-
-  const {
-    data: controllerConfigData,
-    isLoading: isControllerConfigLoading,
-    refetch,
-  } = useControllerConfig();
-
-  useRefreshOnFocus(refetch);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    refetch();
-    setRefreshing(false);
-  };
-
-  if (isControllerConfigLoading)
-    return (
-      <View
-        style={{
-          ...styles.wrapper,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <ActivityIndicator animating={true} size="large" />
-      </View>
-    );
-
   return (
     <View style={styles.wrapper}>
-      <ScrollView
-        contentContainerStyle={styles.contentContainer}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        <Text variant="displaySmall">Session: {session}</Text>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Text variant="displaySmall">IP: {session}</Text>
 
-        <Text variant="displaySmall">
-          configData: {JSON.stringify(controllerConfigData?.data)}
-        </Text>
         <Button
           mode="contained"
           onPress={() => {
@@ -170,7 +131,7 @@ export default function SettingsScreen() {
             signOut();
           }}
         >
-          Sign Out
+          {i18n.t('SignOut')}
         </Button>
       </ScrollView>
     </View>

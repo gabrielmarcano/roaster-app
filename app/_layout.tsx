@@ -24,7 +24,6 @@ import { SessionProvider } from '@/contexts/ctx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 
-
 // Query Client
 const queryClient = new QueryClient();
 
@@ -44,7 +43,7 @@ const CombinedLightTheme = merge(LightTheme, customLightTheme);
 const CombinedDarkTheme = merge(DarkTheme, customDarkTheme);
 
 export default function RootLayout() {
-  useReactQueryDevTools(queryClient)
+  useReactQueryDevTools(queryClient);
   const colorScheme = useColorScheme();
 
   // Merge themes
