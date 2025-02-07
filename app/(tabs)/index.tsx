@@ -1,4 +1,5 @@
 import { CustomEvents } from '@/api/types';
+import TemperatureChart from '@/components/TemperatureChart';
 import { useSession } from '@/contexts/ctx';
 import { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
@@ -21,6 +22,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const es = new EventSource<CustomEvents>(`http://${session}/events`);
+    es.close();
 
     setEventSource(es);
 
@@ -103,6 +105,8 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
+        <TemperatureChart />
+
         <Text variant="displaySmall">sensors event: {sensors}</Text>
         <Text variant="displaySmall">time event: {time}</Text>
         <Text variant="displaySmall">states event: {states}</Text>
