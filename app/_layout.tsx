@@ -21,6 +21,7 @@ import merge from 'deepmerge';
 
 import { useEffect } from 'react';
 import { SessionProvider } from '@/contexts/sessionContext';
+import { SSEProvider } from '@/contexts/sseContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 
@@ -67,14 +68,16 @@ export default function RootLayout() {
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
-        <PaperProvider theme={paperTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-            <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </PaperProvider>
+        <SSEProvider>
+          <PaperProvider theme={paperTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+              <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+            </Stack>
+            <StatusBar style="auto" />
+          </PaperProvider>
+        </SSEProvider>
       </QueryClientProvider>
     </SessionProvider>
   );

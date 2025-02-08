@@ -1,25 +1,18 @@
-import { CustomEvents, IDataChart, ISensor } from '@/api/types';
+import { IDataChart, ISensor } from '@/api/types';
 import HumidityChart from '@/components/HumidityChart';
 import TemperatureChart from '@/components/TemperatureChart';
 import { useSession } from '@/contexts/sessionContext';
+import { useSSE } from '@/contexts/sseContext';
 import { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ActivityIndicator, Button, Text } from 'react-native-paper';
 
-import EventSource from 'react-native-sse';
-
 export default function HomeScreen() {
   const { session } = useSession();
+  const { eventSource, sensors, time, states, controller } = useSSE();
 
   const [refreshing, setRefreshing] = useState(false);
-
-  const [eventSource, setEventSource] =
-    useState<EventSource<CustomEvents> | null>(null);
-  const [sensors, setSensors] = useState('');
-  const [time, setTime] = useState('');
-  const [states, setStates] = useState('');
-  const [controller, setController] = useState('');
 
   const [temperatureData, setTemperatureData] = useState<
     IDataChart['data'] | []
@@ -51,59 +44,11 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    const es = new EventSource<CustomEvents>(`http://${session}/events`);
-
-    setEventSource(es);
-
-    es.addEventListener('open', (event) => {
-      console.log('Open SSE connection.');
-    });
-
-    es.addEventListener('sensors', (event) => {
-      if (event.data) {
-        const data: ISensor = JSON.parse(event.data);
-        handleTemperatureData(data);
-        handleHumidityData(data);
-        setSensors(event.data);
-      }
-    });
-
-    es.addEventListener('time', (event) => {
-      if (event.data) {
-        setTime(event.data);
-      }
-    });
-
-    es.addEventListener('states', (event) => {
-      if (event.data) {
-        setStates(event.data);
-      }
-    });
-
-    es.addEventListener('controller', (event) => {
-      if (event.data) {
-        setController(event.data);
-      }
-    });
-
-    es.addEventListener('error', (event) => {
-      if (event.type === 'error') {
-        console.error('Connection error:', event.message);
-      } else if (event.type === 'exception') {
-        console.error('Error:', event.message, event.error);
-      }
-    });
-
-    es.addEventListener('close', (event) => {
-      console.log('Close SSE connection.');
-    });
-
-    // Clean up the EventSource on component unmount
-    return () => {
-      es.close();
-      setEventSource(null);
-    };
-  }, [session]);
+    if (sensors) {
+      handleTemperatureData(sensors);
+      handleHumidityData(sensors);
+    }
+  }, [sensors]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -136,10 +81,16 @@ export default function HomeScreen() {
         <TemperatureChart data={temperatureData} />
         <HumidityChart data={humidityData} />
 
-        <Text variant="displaySmall">sensors event: {sensors}</Text>
-        <Text variant="displaySmall">time event: {time}</Text>
-        <Text variant="displaySmall">states event: {states}</Text>
-        <Text variant="displaySmall">controller event: {controller}</Text>
+        <Text variant="displaySmall">
+          sensors event: {JSON.stringify(sensors)}
+        </Text>
+        <Text variant="displaySmall">time event: {JSON.stringify(time)}</Text>
+        <Text variant="displaySmall">
+          states event: {JSON.stringify(states)}
+        </Text>
+        <Text variant="displaySmall">
+          controller event: {JSON.stringify(controller)}
+        </Text>
         <Button
           mode="contained"
           onPress={() => {
