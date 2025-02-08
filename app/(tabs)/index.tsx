@@ -6,11 +6,11 @@ import { useSSE } from '@/contexts/sseContext';
 import { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { ActivityIndicator, Button, Text } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function HomeScreen() {
   const { session } = useSession();
-  const { eventSource, sensors, time, states, controller } = useSSE();
+  const { eventSource, sensors } = useSSE();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -80,33 +80,6 @@ export default function HomeScreen() {
       >
         <TemperatureChart data={temperatureData} />
         <HumidityChart data={humidityData} />
-
-        <Text variant="displaySmall">
-          sensors event: {JSON.stringify(sensors)}
-        </Text>
-        <Text variant="displaySmall">time event: {JSON.stringify(time)}</Text>
-        <Text variant="displaySmall">
-          states event: {JSON.stringify(states)}
-        </Text>
-        <Text variant="displaySmall">
-          controller event: {JSON.stringify(controller)}
-        </Text>
-        <Button
-          mode="contained"
-          onPress={() => {
-            eventSource?.close();
-          }}
-        >
-          Close event source
-        </Button>
-        <Button
-          mode="contained"
-          onPress={() => {
-            console.log('clicked');
-          }}
-        >
-          Click
-        </Button>
       </ScrollView>
     </View>
   );
