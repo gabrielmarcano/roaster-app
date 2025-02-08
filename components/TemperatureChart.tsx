@@ -104,6 +104,9 @@ const TemperatureChart = (props: IDataChart) => {
                   <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>
                     {items[0].value + '°C'}
                   </Text>
+                  <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>
+                    {items[0].timestamp.split(' ')[0]}
+                  </Text>
                 </View>
               </View>
             );

@@ -24,7 +24,7 @@ export default function HomeScreen() {
       ...prev,
       {
         value: data.temperature,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toTimeString(),
       },
     ]);
 
@@ -36,7 +36,7 @@ export default function HomeScreen() {
       ...prev,
       {
         value: data.humidity,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toTimeString(),
       },
     ]);
 
