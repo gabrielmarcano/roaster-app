@@ -9,7 +9,10 @@ const translations = {
       Timer: 'Timer',
       Settings: 'Settings',
     },
-    Dashboard: {},
+    Dashboard: {
+      Temperature: 'Temperature',
+      Humidity: 'Humidity',
+    },
     Controller: {
       Status: 'Status',
       Mode: 'Mode',
@@ -18,7 +21,7 @@ const translations = {
       Buttons: {
         SaveControllerConfiguration: 'Save controller configuration',
         ActivateController: 'Activate controller',
-      }
+      },
     },
     Timer: {},
     Settings: {},
@@ -33,7 +36,10 @@ const translations = {
       Timer: 'Temporizador',
       Settings: 'Opciones',
     },
-    Dashboard: {},
+    Dashboard: {
+      Temperature: 'Temperatura',
+      Humidity: 'Humedad',
+    },
     Controller: {
       Status: 'Estado',
       Mode: 'Modo',
@@ -42,7 +48,7 @@ const translations = {
       Buttons: {
         SaveControllerConfiguration: 'Guardar configuración del sistema',
         ActivateController: 'Activar sistema',
-      }
+      },
     },
     Timer: {},
     Settings: {},
@@ -61,6 +67,6 @@ i18n.locale = getLocales()[0].languageCode ?? 'en';
 i18n.enableFallback = true;
 
 // Manually select a locale
-// i18n.locale = 'es';
+i18n.locale = 'es';
 
 export default i18n;

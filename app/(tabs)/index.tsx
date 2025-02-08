@@ -32,16 +32,10 @@ export default function HomeScreen() {
       {
         value: data.temperature,
         timestamp: new Date().toISOString(),
-        label:
-          prev.length % 8 === 3
-            ? data.temperature.toString() + '°C'
-            : undefined,
-        labelTextStyle:
-          prev.length % 8 === 3 ? { color: 'lightgray', width: 60 } : undefined,
       },
     ]);
 
-    setTemperatureData((prev) => (prev.length > 30 ? prev.slice(-30) : prev)); // TODO: adjust the number to the amount seen in the chart
+    setTemperatureData((prev) => (prev.length > 17 ? prev.slice(-17) : prev));
   };
 
   const handleHumidityData = (data: ISensor) => {
@@ -50,14 +44,10 @@ export default function HomeScreen() {
       {
         value: data.humidity,
         timestamp: new Date().toISOString(),
-        label:
-          prev.length % 8 === 3 ? data.humidity.toString() + '%' : undefined,
-        labelTextStyle:
-          prev.length % 8 === 3 ? { color: 'lightgray', width: 60 } : undefined,
       },
     ]);
 
-    setHumidityData((prev) => (prev.length > 30 ? prev.slice(-30) : prev)); // TODO: adjust the number to the amount seen in the chart
+    setHumidityData((prev) => (prev.length > 8 ? prev.slice(-8) : prev));
   };
 
   useEffect(() => {

@@ -2,38 +2,78 @@ import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { LineChart, yAxisSides } from 'react-native-gifted-charts';
 import { IDataChart } from '@/api/types';
+import i18n from '@/i18n';
 
 const TemperatureChart = (props: IDataChart) => {
   return (
     <View
       style={{
-        paddingVertical: 60,
+        paddingVertical: 20,
         paddingLeft: 20,
-        backgroundColor: '#1C1C1C',
+        backgroundColor: 'rgba(28, 28, 28, 0.7)',
       }}
     >
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginTop: -10,
+          marginBottom: 50,
+        }}
+      >
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 20,
+          }}
+        >
+          {i18n.t('Dashboard.Temperature')}
+        </Text>
+        <View
+          style={{
+            width: 80,
+            justifyContent: 'center',
+            marginRight: 15,
+          }}
+        >
+          <View
+            style={{
+              paddingVertical: 3,
+              borderRadius: 16,
+              backgroundColor: 'grey',
+            }}
+          >
+            <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>
+              {`${props.data.at(-1)?.value ?? '-'}°C`}
+            </Text>
+          </View>
+        </View>
+      </View>
       <LineChart
-        overflowTop={1}
         areaChart
+        disableScroll
+        scrollAnimation={false}
         data={props.data}
         width={330}
         hideDataPoints
-        spacing={10}
-        color="#00ff83"
+        spacing={21}
+        color="rgba(0, 255, 131, 1)"
         thickness={2}
         startFillColor="rgba(20,105,81,0.3)"
         endFillColor="rgba(20,85,81,0.01)"
         startOpacity={0.9}
         endOpacity={0.2}
         initialSpacing={0}
-        noOfSections={6}
-        maxValue={400}
+        noOfSections={5}
+        maxValue={200}
+        rulesColor="gray"
         yAxisColor="white"
         yAxisThickness={0}
-        rulesColor="gray"
-        yAxisTextStyle={{ color: 'gray' }}
+        yAxisTextStyle={{ color: 'gray', marginRight: -10 }}
+        yAxisLabelSuffix="°C"
         yAxisSide={yAxisSides.RIGHT}
         xAxisColor="lightgray"
+        overflowTop={1}
         pointerConfig={{
           pointerStripHeight: 160,
           pointerStripWidth: 0,
