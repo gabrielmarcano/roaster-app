@@ -1,15 +1,11 @@
 import { IDataChart, ISensor } from '@/api/types';
 import HumidityChart from '@/components/HumidityChart';
 import TemperatureChart from '@/components/TemperatureChart';
-import { useSession } from '@/contexts/sessionContext';
 import { useSSE } from '@/contexts/sseContext';
 import { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { ActivityIndicator } from 'react-native-paper';
-
 export default function HomeScreen() {
-  const { session } = useSession();
   const { eventSource, sensors } = useSSE();
 
   const [refreshing, setRefreshing] = useState(false);
@@ -57,19 +53,6 @@ export default function HomeScreen() {
     setRefreshing(false);
   };
 
-  if (!session)
-    return (
-      <View
-        style={{
-          ...styles.wrapper,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <ActivityIndicator animating={true} size="large" />
-      </View>
-    );
-
   return (
     <View style={styles.wrapper}>
       <ScrollView
@@ -91,6 +74,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#353636',
   },
   contentContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
     padding: 16,
     gap: 16,
   },
