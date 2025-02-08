@@ -4,7 +4,7 @@ import { ActivityIndicator, Button, Text } from 'react-native-paper';
 
 import { useControllerConfig } from '@/api/queries';
 import { useRefreshOnFocus } from '@/hooks/useRefreshOnFocus';
-import { useSession } from '@/contexts/ctx';
+import { useSession } from '@/contexts/sessionContext';
 
 import { useState } from 'react';
 

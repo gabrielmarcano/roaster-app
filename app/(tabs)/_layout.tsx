@@ -3,7 +3,7 @@ import React from 'react';
 
 import { ThemedText } from '@/components/ThemedText';
 
-import { useSession } from '@/contexts/ctx';
+import { useSession } from '@/contexts/sessionContext';
 import TabBar from '@/components/ui/TabBar';
 import TabsHeader from '@/components/ui/TabsHeader';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

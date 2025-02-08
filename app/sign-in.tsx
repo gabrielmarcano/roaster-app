@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { TextInput, Button, HelperText } from 'react-native-paper';
 import { ThemedView } from '@/components/ThemedView';
-import { useSession } from '@/contexts/ctx';
+import { useSession } from '@/contexts/sessionContext';
 
 import i18n from '@/i18n';
 

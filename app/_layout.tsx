@@ -20,7 +20,7 @@ import { Colors } from '@/constants/Colors';
 import merge from 'deepmerge';
 
 import { useEffect } from 'react';
-import { SessionProvider } from '@/contexts/ctx';
+import { SessionProvider } from '@/contexts/sessionContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 

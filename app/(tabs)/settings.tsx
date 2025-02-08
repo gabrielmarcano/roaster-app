@@ -112,7 +112,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button, Text } from 'react-native-paper';
 
-import { useSession } from '@/contexts/ctx';
+import { useSession } from '@/contexts/sessionContext';
 
 import i18n from '@/i18n';
 

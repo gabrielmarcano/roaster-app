@@ -1,7 +1,7 @@
 import { CustomEvents, IDataChart, ISensor } from '@/api/types';
 import HumidityChart from '@/components/HumidityChart';
 import TemperatureChart from '@/components/TemperatureChart';
-import { useSession } from '@/contexts/ctx';
+import { useSession } from '@/contexts/sessionContext';
 import { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
