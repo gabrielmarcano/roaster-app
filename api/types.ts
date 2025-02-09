@@ -16,7 +16,8 @@ export interface ITimer {
 // );
 
 export interface IUpdateTimer {
-  action: 'add' | 'reduce';
+  action: 'add' | 'reduce' | 'change';
+  time?: number;
 }
 
 export interface IMotorStates {

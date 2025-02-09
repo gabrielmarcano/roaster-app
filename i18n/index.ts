@@ -23,7 +23,12 @@ const translations = {
         ActivateController: 'Activate controller',
       },
     },
-    Timer: {},
+    Timer: {
+      Buttons: {
+        AddTime: 'Add time',
+        ReduceTime: 'Reduce time',
+      },
+    },
     Settings: {},
     Loading: 'Loading',
     Start: 'Start',
@@ -50,7 +55,12 @@ const translations = {
         ActivateController: 'Activar sistema',
       },
     },
-    Timer: {},
+    Timer: {
+      Buttons: {
+        AddTime: 'Añadir tiempo',
+        ReduceTime: 'Reducir tiempo',
+      },
+    },
     Settings: {},
     Loading: 'Cargando',
     Start: 'Empezar',

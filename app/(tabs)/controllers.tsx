@@ -164,7 +164,7 @@ export default function ControllersScreen() {
                   </DataTable.Title>
                 </View>
                 <DataTable.Title numeric>
-                  {`${i18n.t('Controller.Time')} (s)`}
+                  {i18n.t('Controller.Time')}
                 </DataTable.Title>
               </DataTable.Header>
 
@@ -179,7 +179,9 @@ export default function ControllersScreen() {
                   {controllerConfigData?.data.starting_temperature}
                 </DataTable.Cell>
                 <DataTable.Cell numeric>
-                  {controllerConfigData?.data.time}
+                  {new Date((controllerConfigData?.data.time ?? 0) * 1000)
+                    .toISOString()
+                    .slice(11, 19)}
                 </DataTable.Cell>
               </DataTable.Row>
             </DataTable>
