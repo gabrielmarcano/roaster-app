@@ -75,6 +75,21 @@ export default function ControllersScreen() {
     );
   };
 
+  const onStop = () => {
+    manageController.mutate(
+      {
+        action: 'stop',
+      },
+      {
+        onSuccess() {
+          queryClient.invalidateQueries({
+            queryKey: ['fetchControllerConfig'],
+          });
+        },
+      },
+    );
+  };
+
   const onToggleSwitch = () => {
     manageController.mutate(
       {
@@ -128,6 +143,13 @@ export default function ControllersScreen() {
           disabled={isControllerConfigLoading}
         >
           {i18n.t('Controller.Buttons.SaveControllerConfiguration')}
+        </Button>
+        <Button
+          mode="contained"
+          onPress={onStop}
+          disabled={isControllerConfigLoading}
+        >
+          Stop controller
         </Button>
         <View style={styles.switchContainer}>
           <Text variant="labelLarge">
