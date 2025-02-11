@@ -1,6 +1,6 @@
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { Button, Text } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 import { useSSE } from '@/contexts/sseContext';
 
@@ -45,9 +45,6 @@ export default function TimerScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <Text variant="displaySmall">current time: {time?.current_time}</Text>
-        <Text variant="displaySmall">total time: {time?.total_time}</Text>
-
         <View style={styles.timerContainer}>
           <CircularProgress
             progressPercent={percentage}

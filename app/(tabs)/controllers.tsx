@@ -45,7 +45,6 @@ export default function ControllersScreen() {
     undefined,
   );
 
-  const [mode, setMode] = useState<string | undefined>(undefined);
   const [startingTemperature, setStartingTemperature] = useState<
     string | undefined
   >(undefined);
@@ -84,17 +83,38 @@ export default function ControllersScreen() {
     setRefreshing(false);
   };
 
-  const onUseConfig = () => {
-    console.log(mode, startingTemperature, time);
+  // Dialog callbacks
 
-    if (mode !== 'cafe' && mode !== 'cacao' && mode !== 'mani')
-      setMode(undefined);
-    if (isNaN(Number(startingTemperature))) setStartingTemperature(undefined);
-    if (isNaN(Number(time))) setTime(undefined);
+  const onCancelDialog = () => {
+    hideAddDialog();
+    hideDeleteDialog();
+    setNewConfigName(undefined);
+    setNewConfigTemperature(undefined);
+    setNewConfigTime(undefined);
+    setStartingTemperature(undefined);
+    setTime(undefined);
+  };
+
+  const showAddDialog = () => setAddConfigDialogVisible(true);
+  const hideAddDialog = () => setAddConfigDialogVisible(false);
+
+  const showDeleteDialog = (name: string) => {
+    setNewConfigName(name);
+    setDeleteConfigDialogVisible(true);
+  };
+  const hideDeleteDialog = () => setDeleteConfigDialogVisible(false);
+
+  // Handlers
+
+  const onUseConfig = () => {
+    if (isNaN(Number(startingTemperature)) || isNaN(Number(time))) {
+      setStartingTemperature(undefined);
+      setTime(undefined);
+      return;
+    }
 
     updateControllerConfig.mutate(
       {
-        mode: mode as 'cafe' | 'cacao' | 'mani' | undefined,
         starting_temperature: Number(startingTemperature),
         time: Number(time),
       },
@@ -182,25 +202,6 @@ export default function ControllersScreen() {
       },
     });
   };
-
-  const onCancelDialog = () => {
-    hideAddDialog();
-    hideDeleteDialog();
-    setNewConfigName(undefined);
-    setNewConfigTemperature(undefined);
-    setNewConfigTime(undefined);
-    setStartingTemperature(undefined);
-    setTime(undefined);
-  };
-
-  const showAddDialog = () => setAddConfigDialogVisible(true);
-  const hideAddDialog = () => setAddConfigDialogVisible(false);
-
-  const showDeleteDialog = (name: string) => {
-    setNewConfigName(name);
-    setDeleteConfigDialogVisible(true);
-  };
-  const hideDeleteDialog = () => setDeleteConfigDialogVisible(false);
 
   // Effects
 

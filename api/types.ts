@@ -31,16 +31,11 @@ export interface IReadings {
   time_values: ITimer;
   motor_states: IMotorStates;
 }
-
 export interface IInternalConfig {
-  [key: string]: {
-    starting_temperature: number;
-    time: number;
-  };
+  [key: string]: Omit<IControllerConfig, 'status'>;
 }
 
 export interface IControllerConfig {
-  mode: 'cafe' | 'cacao' | 'mani';
   starting_temperature: number;
   time: number;
   status: 'on' | 'off';
