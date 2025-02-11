@@ -32,6 +32,13 @@ export interface IReadings {
   motor_states: IMotorStates;
 }
 
+export interface IInternalConfig {
+  [key: string]: {
+    starting_temperature: number;
+    time: number;
+  };
+}
+
 export interface IControllerConfig {
   mode: 'cafe' | 'cacao' | 'mani';
   starting_temperature: number;

@@ -1,17 +1,41 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
+  deleteInternalConfig,
   getControllerConfig,
+  getInternalConfig,
   manageController,
   resetMicro,
   updateControllerConfig,
+  updateInternalConfig,
   updateTimer,
 } from '@/api/api';
-import { IControllerConfig, IManageController, IUpdateTimer } from './types';
+import {
+  IControllerConfig,
+  IInternalConfig,
+  IManageController,
+  IUpdateTimer,
+} from './types';
 
 export const useUpdateTimer = () =>
   useMutation({
     mutationFn: (body: IUpdateTimer) => updateTimer(body),
+  });
+
+export const useInternalConfig = () =>
+  useQuery({
+    queryKey: ['fetchInternalConfig'],
+    queryFn: getInternalConfig,
+  });
+
+export const useUpdateInternalConfig = () =>
+  useMutation({
+    mutationFn: (body: IInternalConfig) => updateInternalConfig(body),
+  });
+
+export const useDeleteInternalConfig = () =>
+  useMutation({
+    mutationFn: (name: string) => deleteInternalConfig(name),
   });
 
 export const useControllerConfig = () =>
