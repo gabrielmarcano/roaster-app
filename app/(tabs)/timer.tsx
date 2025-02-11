@@ -88,7 +88,7 @@ export default function TimerScreen() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#353636',
+    backgroundColor: 'rgba(53, 54, 54, 1)',
   },
   contentContainer: {
     flex: 1,
