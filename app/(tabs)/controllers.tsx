@@ -31,6 +31,7 @@ export default function ControllersScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
+  const [useConfigDialogVisible, setUseConfigDialogVisible] = useState(false);
   const [addConfigDialogVisible, setAddConfigDialogVisible] = useState(false);
   const [deleteConfigDialogVisible, setDeleteConfigDialogVisible] =
     useState(false);
@@ -86,6 +87,7 @@ export default function ControllersScreen() {
   // Dialog callbacks
 
   const onCancelDialog = () => {
+    hideUseDialog();
     hideAddDialog();
     hideDeleteDialog();
     setNewConfigName(undefined);
@@ -94,6 +96,13 @@ export default function ControllersScreen() {
     setStartingTemperature(undefined);
     setTime(undefined);
   };
+
+  const showUseDialog = (config: IInternalConfig[keyof IInternalConfig]) => {
+    setStartingTemperature(String(config.starting_temperature));
+    setTime(String(config.time));
+    setUseConfigDialogVisible(true);
+  };
+  const hideUseDialog = () => setUseConfigDialogVisible(false);
 
   const showAddDialog = () => setAddConfigDialogVisible(true);
   const hideAddDialog = () => setAddConfigDialogVisible(false);
@@ -110,6 +119,7 @@ export default function ControllersScreen() {
     if (isNaN(Number(startingTemperature)) || isNaN(Number(time))) {
       setStartingTemperature(undefined);
       setTime(undefined);
+      hideUseDialog();
       return;
     }
 
@@ -123,6 +133,7 @@ export default function ControllersScreen() {
           queryClient.invalidateQueries({
             queryKey: ['fetchControllerConfig'],
           });
+          onCancelDialog();
         },
       },
     );
@@ -156,11 +167,6 @@ export default function ControllersScreen() {
         },
       },
     );
-  };
-
-  const onSelectConfig = (config: IInternalConfig[keyof IInternalConfig]) => {
-    setStartingTemperature(String(config.starting_temperature));
-    setTime(String(config.time));
   };
 
   const onSaveConfig = () => {
@@ -238,7 +244,7 @@ export default function ControllersScreen() {
                   style={styles.listItem}
                   left={(props) => <List.Icon {...props} icon="minus-thick" />}
                   onLongPress={() => showDeleteDialog(key)}
-                  onPress={() => onSelectConfig(internalConfigData?.data[key])}
+                  onPress={() => showUseDialog(internalConfigData?.data[key])}
                   description={`${i18n.t('Controller.StartingTemperature')}: ${internalConfigData?.data[key].starting_temperature}, ${i18n.t('Controller.Time')}: ${new Date(
                     (internalConfigData?.data[key].time ?? 0) * 1000,
                   )
@@ -254,88 +260,156 @@ export default function ControllersScreen() {
             />
           </List.Accordion>
         </View>
-        <View style={styles.textInputContainer}>
-          <Text variant="titleLarge">{i18n.t('Controller.Configuration')}</Text>
-          <TextInput
-            value={startingTemperature}
-            placeholder={i18n.t('Controller.TemperaturePlaceholder')}
-            onChangeText={(text) => setStartingTemperature(text)}
-          />
-          <TextInput
-            value={time}
-            placeholder={i18n.t('Controller.TimePlaceholder')}
-            onChangeText={(text) => setTime(text)}
-          />
+
+        <View style={styles.cardContainer}>
+          {isControllerConfigLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator animating={true} size="large" />
+            </View>
+          ) : (
+            <>
+              <Text variant="titleLarge">
+                {i18n.t('Controller.CurrentConfiguration')}
+              </Text>
+              <DataTable>
+                <DataTable.Header>
+                  <DataTable.Title>
+                    {i18n.t('Controller.Status')}
+                  </DataTable.Title>
+                  <View>
+                    <DataTable.Title
+                      numeric
+                      style={{
+                        width: 120,
+                      }}
+                    >
+                      {i18n.t('Controller.StartingTemperature')}
+                    </DataTable.Title>
+                  </View>
+                  <DataTable.Title numeric>
+                    {i18n.t('Controller.Time')}
+                  </DataTable.Title>
+                </DataTable.Header>
+
+                <DataTable.Row>
+                  <DataTable.Cell>
+                    {controllerConfigData?.data.status}
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    {controllerConfigData?.data.starting_temperature}
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    {new Date((controllerConfigData?.data.time ?? 0) * 1000)
+                      .toISOString()
+                      .slice(11, 19)}
+                  </DataTable.Cell>
+                </DataTable.Row>
+              </DataTable>
+            </>
+          )}
+        </View>
+
+        <View style={styles.cardContainer}>
+          <Text variant="titleLarge">{i18n.t('Controller.StopSystem')}</Text>
           <Button
             mode="contained"
-            onPress={onUseConfig}
+            onPress={onStop}
             disabled={isControllerConfigLoading}
           >
-            {i18n.t('Controller.Buttons.UseConfiguration')}
+            {i18n.t('Controller.Buttons.StopController')}
           </Button>
         </View>
-        {isControllerConfigLoading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator animating={true} size="large" />
-          </View>
-        ) : (
-          <>
-            <DataTable>
-              <DataTable.Header>
-                <DataTable.Title>{i18n.t('Controller.Status')}</DataTable.Title>
-                <View>
-                  <DataTable.Title
-                    numeric
-                    style={{
-                      width: 120,
-                    }}
-                  >
-                    {i18n.t('Controller.StartingTemperature')}
-                  </DataTable.Title>
-                </View>
-                <DataTable.Title numeric>
-                  {i18n.t('Controller.Time')}
-                </DataTable.Title>
-              </DataTable.Header>
 
-              <DataTable.Row>
-                <DataTable.Cell>
-                  {controllerConfigData?.data.status}
-                </DataTable.Cell>
-                <DataTable.Cell numeric>
-                  {controllerConfigData?.data.starting_temperature}
-                </DataTable.Cell>
-                <DataTable.Cell numeric>
-                  {new Date((controllerConfigData?.data.time ?? 0) * 1000)
-                    .toISOString()
-                    .slice(11, 19)}
-                </DataTable.Cell>
-              </DataTable.Row>
-            </DataTable>
-          </>
-        )}
-        <Button
-          mode="contained"
-          onPress={onStop}
-          disabled={isControllerConfigLoading}
-        >
-          {i18n.t('Controller.Buttons.StopController')}
-        </Button>
-        <View style={styles.switchContainer}>
-          <Text variant="labelLarge">
-            {i18n.t('Controller.Buttons.ActivateController')}:
+        <View style={styles.cardContainer}>
+          <Text variant="titleLarge">
+            {i18n.t('Controller.ActivateSystem')}
           </Text>
-          <Switch
-            value={isSwitchOn}
-            onValueChange={onToggleSwitch}
-            disabled={isControllerConfigLoading}
-            style={{
-              transform: [{ scaleX: 1.6 }, { scaleY: 1.6 }],
-              marginHorizontal: 24,
-            }}
-          />
+          <View style={styles.switchContainer}>
+            <Text variant="labelLarge">
+              {i18n.t('Controller.Buttons.ActivateController')}:
+            </Text>
+            <Switch
+              value={isSwitchOn}
+              onValueChange={onToggleSwitch}
+              disabled={isControllerConfigLoading}
+              style={styles.switch}
+            />
+          </View>
         </View>
 
+        <View style={styles.cardContainer}>
+          <Text variant="titleLarge">{i18n.t('Controller.ControlMotors')}</Text>
+          <View style={styles.switchContainer}>
+            <View style={styles.switchMotorContainer}>
+              <Text variant="labelLarge">
+                {i18n.t('Controller.Buttons.Motor1')}
+              </Text>
+              <Switch
+                value={false}
+                onValueChange={() => {}}
+                disabled={true}
+                style={styles.switch}
+              />
+            </View>
+            <View style={styles.switchMotorContainer}>
+              <Text variant="labelLarge">
+                {i18n.t('Controller.Buttons.Motor2')}
+              </Text>
+              <Switch
+                value={false}
+                onValueChange={() => {}}
+                disabled={true}
+                style={styles.switch}
+              />
+            </View>
+            <View style={styles.switchMotorContainer}>
+              <Text variant="labelLarge">
+                {i18n.t('Controller.Buttons.Motor3')}
+              </Text>
+              <Switch
+                value={false}
+                onValueChange={() => {}}
+                disabled={true}
+                style={styles.switch}
+              />
+            </View>
+          </View>
+        </View>
+
+        {/* Use configuration dialog */}
+        <View>
+          <Portal>
+            <Dialog visible={useConfigDialogVisible} onDismiss={onCancelDialog}>
+              <Dialog.Title>
+                {i18n.t('Controller.Dialog.UseConfiguration')}
+              </Dialog.Title>
+              <Dialog.Content style={styles.addNewConfigDialogContent}>
+                <TextInput
+                  defaultValue={startingTemperature}
+                  placeholder={i18n.t('Controller.TemperaturePlaceholder')}
+                  onChangeText={(text) => setStartingTemperature(text)}
+                  right={<TextInput.Affix text="°C" />}
+                />
+                <TextInput
+                  defaultValue={time}
+                  placeholder={i18n.t('Controller.TimePlaceholder')}
+                  onChangeText={(text) => setTime(text)}
+                  right={<TextInput.Affix text="s" />}
+                />
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={onCancelDialog}>
+                  {i18n.t('Controller.Dialog.Cancel')}
+                </Button>
+                <Button onPress={onUseConfig}>
+                  {i18n.t('Controller.Dialog.Use')}
+                </Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+        </View>
+
+        {/* Add new configuration dialog */}
         <View>
           <Portal>
             <Dialog visible={addConfigDialogVisible} onDismiss={onCancelDialog}>
@@ -352,11 +426,13 @@ export default function ControllersScreen() {
                   defaultValue={newConfigTemperature}
                   placeholder={i18n.t('Controller.TemperaturePlaceholder')}
                   onChangeText={(text) => setNewConfigTemperature(text)}
+                  right={<TextInput.Affix text="°C" />}
                 />
                 <TextInput
                   defaultValue={newConfigTime}
                   placeholder={i18n.t('Controller.TimePlaceholder')}
                   onChangeText={(text) => setNewConfigTime(text)}
+                  right={<TextInput.Affix text="s" />}
                 />
               </Dialog.Content>
               <Dialog.Actions>
@@ -371,6 +447,7 @@ export default function ControllersScreen() {
           </Portal>
         </View>
 
+        {/* Delete configuration dialog */}
         <View>
           <Portal>
             <Dialog
@@ -412,9 +489,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  textInputContainer: {
+  cardContainer: {
+    // width: '85%',
     width: '90%',
-    gap: 16,
+    padding: 32,
+    // backgroundColor: 'rgb(50, 47, 51)',
+    backgroundColor: 'rgba(28, 28, 28, 0.7)',
+    borderRadius: 16,
+    alignItems: 'center',
+    gap: 24,
   },
   switchContainer: {
     flex: 1,
@@ -422,8 +505,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  switchMotorContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  switch: {
+    transform: [{ scaleX: 1.6 }, { scaleY: 1.6 }],
+    marginHorizontal: 24,
+  },
   loadingContainer: {
-    paddingTop: 32,
+    padding: 32,
     justifyContent: 'center',
     alignItems: 'center',
   },
