@@ -344,17 +344,17 @@ export default function ControllersScreen() {
               </Dialog.Title>
               <Dialog.Content style={styles.addNewConfigDialogContent}>
                 <TextInput
-                  value={newConfigName}
+                  defaultValue={newConfigName}
                   placeholder={i18n.t('Controller.NamePlaceholder')}
                   onChangeText={(text) => setNewConfigName(text)}
                 />
                 <TextInput
-                  value={newConfigTemperature}
+                  defaultValue={newConfigTemperature}
                   placeholder={i18n.t('Controller.TemperaturePlaceholder')}
                   onChangeText={(text) => setNewConfigTemperature(text)}
                 />
                 <TextInput
-                  value={newConfigTime}
+                  defaultValue={newConfigTime}
                   placeholder={i18n.t('Controller.TimePlaceholder')}
                   onChangeText={(text) => setNewConfigTime(text)}
                 />
