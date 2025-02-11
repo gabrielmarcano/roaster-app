@@ -1,7 +1,7 @@
 import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 
-import { ThemedText } from '@/components/ThemedText';
+import { Text } from 'react-native-paper';
 
 import { useSession } from '@/contexts/sessionContext';
 import TabBar from '@/components/ui/TabBar';
@@ -15,7 +15,7 @@ export default function TabLayout() {
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
-    return <ThemedText>{i18n.t('Loading')}...</ThemedText>;
+    return <Text>{i18n.t('Loading')}...</Text>;
   }
 
   // Only require authentication within the (app) group's layout as users

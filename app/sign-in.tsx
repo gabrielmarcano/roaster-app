@@ -1,26 +1,24 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { TextInput, Button, HelperText } from 'react-native-paper';
-import { ThemedView } from '@/components/ThemedView';
 import { useSession } from '@/contexts/sessionContext';
 
 import i18n from '@/i18n';
+import { Colors } from '@/constants/Colors';
 
 export default function SignIn() {
   const [ip, setIp] = useState<string>('');
   const { signIn } = useSession();
 
   return (
-    <ThemedView
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-    >
-      <ThemedView style={styles.textInputContainer}>
+    <View style={[styles.wrapper, styles.background]}>
+      <View style={styles.textInputContainer}>
         <TextInput value={ip} onChangeText={(text) => setIp(text)} />
         <HelperText type="info">e.g. 192.168.1.10</HelperText>
-      </ThemedView>
-      <ThemedView>
+      </View>
+      <View>
         <Button
           mode="contained"
           onPress={() => {
@@ -37,14 +35,22 @@ export default function SignIn() {
         >
           {i18n.t('Start')}
         </Button>
-      </ThemedView>
-    </ThemedView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   textInputContainer: {
     width: '60%',
     marginBottom: 30,
+  },
+  background: {
+    backgroundColor: Colors.dark.background,
   },
 });
