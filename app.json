@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#EDE1FD"
+        "backgroundColor": "#4b4356"
       },
       "package": "com.gabrielmarcano.roasterapp"
     },
@@ -31,7 +31,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#EDE1FD"
+          "backgroundColor": "#4b4356"
         }
       ],
       "expo-secure-store",
