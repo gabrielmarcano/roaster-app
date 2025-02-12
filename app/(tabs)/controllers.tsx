@@ -275,12 +275,7 @@ export default function ControllersScreen() {
                     {i18n.t('Controller.Status')}
                   </DataTable.Title>
                   <View>
-                    <DataTable.Title
-                      numeric
-                      style={{
-                        width: 120,
-                      }}
-                    >
+                    <DataTable.Title style={styles.tableCenter}>
                       {i18n.t('Controller.StartingTemperature')}
                     </DataTable.Title>
                   </View>
@@ -290,13 +285,13 @@ export default function ControllersScreen() {
                 </DataTable.Header>
 
                 <DataTable.Row>
-                  <DataTable.Cell>
+                  <DataTable.Cell style={styles.tablePadding}>
                     {controllerConfigData?.data.status}
                   </DataTable.Cell>
-                  <DataTable.Cell numeric>
-                    {controllerConfigData?.data.starting_temperature}
+                  <DataTable.Cell style={styles.tableCenter}>
+                    {controllerConfigData?.data.starting_temperature}°C
                   </DataTable.Cell>
-                  <DataTable.Cell numeric>
+                  <DataTable.Cell numeric style={styles.tablePadding}>
                     {new Date((controllerConfigData?.data.time ?? 0) * 1000)
                       .toISOString()
                       .slice(11, 19)}
@@ -522,5 +517,11 @@ const styles = StyleSheet.create({
   },
   addNewConfigDialogContent: {
     gap: 16,
+  },
+  tablePadding: {
+    paddingLeft: 8,
+  },
+  tableCenter: {
+    justifyContent: 'center',
   },
 });
