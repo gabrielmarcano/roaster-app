@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { FAB, Switch, Text } from 'react-native-paper';
+import { FAB, Text } from 'react-native-paper';
 
 import { useSession } from '@/contexts/sessionContext';
 
@@ -17,7 +17,7 @@ import { useQueryClient } from '@tanstack/react-query';
 export default function SettingsScreen() {
   const { session, signOut } = useSession();
 
-  const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const [isSystemOn, setIsSwitchOn] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -47,10 +47,10 @@ export default function SettingsScreen() {
     restartMicro.mutate();
   };
 
-  const onToggleSwitch = () => {
+  const onToggleSystem = () => {
     manageController.mutate(
       {
-        action: isSwitchOn ? 'deactivate' : 'activate',
+        action: isSystemOn ? 'deactivate' : 'activate',
       },
       {
         onSuccess() {
@@ -70,25 +70,10 @@ export default function SettingsScreen() {
     <View style={styles.wrapper}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.cardContainer}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.ipContainer}>
             <Text variant="titleLarge">IP: </Text>
-            <View
-              style={{
-                backgroundColor: 'rgba(13, 15, 8, 0.22)',
-                borderRadius: 12,
-                borderWidth: 2,
-                borderColor: 'grey',
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-                marginLeft: 6,
-              }}
-            >
-              <Text
-                variant="titleLarge"
-                style={{
-                  fontFamily: 'monospace',
-                }}
-              >
+            <View style={styles.ipBox}>
+              <Text variant="titleLarge" style={styles.ipText}>
                 {session}
               </Text>
             </View>
@@ -109,11 +94,16 @@ export default function SettingsScreen() {
           <Text variant="titleLarge">
             {i18n.t('Settings.Buttons.ActivateSystem')}
           </Text>
-          <Switch
-            value={isSwitchOn}
-            onValueChange={onToggleSwitch}
+          <FAB
+            mode="flat"
+            variant="tertiary"
+            style={isSystemOn ? styles.systemOnIcon : {}}
+            color={isSystemOn ? 'rgb(114, 169, 124)' : undefined}
+            label={isSystemOn ? 'On' : 'Off'}
+            size="medium"
+            icon={isSystemOn ? 'sync-circle' : 'power-sleep'}
             disabled={isControllerConfigLoading}
-            style={styles.switch}
+            onPress={onToggleSystem}
           />
         </View>
 
@@ -126,6 +116,7 @@ export default function SettingsScreen() {
             variant="tertiary"
             size="medium"
             icon="stop"
+            disabled={isControllerConfigLoading}
             onPress={onStop}
           />
         </View>
@@ -173,5 +164,21 @@ const styles = StyleSheet.create({
   },
   restartButton: {
     backgroundColor: 'rgb(83, 59, 19)',
+  },
+  ipContainer: { flexDirection: 'row', alignItems: 'center' },
+  ipBox: {
+    backgroundColor: 'rgba(13, 15, 8, 0.22)',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: 'grey',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginLeft: 6,
+  },
+  ipText: {
+    fontFamily: 'monospace',
+  },
+  systemOnIcon: {
+    backgroundColor: 'rgb(19, 73, 29)',
   },
 });
