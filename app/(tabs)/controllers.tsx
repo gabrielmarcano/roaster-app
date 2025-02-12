@@ -203,7 +203,6 @@ export default function ControllersScreen() {
   useFocusEffect(
     useCallback(() => {
       if (states) {
-        console.log(states);
         setIsMotorAOn(Boolean(states.motor_a));
         setIsMotorBOn(Boolean(states.motor_b));
         setIsMotorCOn(Boolean(states.motor_c));
