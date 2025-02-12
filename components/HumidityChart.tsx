@@ -1,49 +1,17 @@
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { LineChart, yAxisSides } from 'react-native-gifted-charts';
 import { IDataChart } from '@/api/types';
 import i18n from '@/i18n';
 
-const HumidityChart = (props: IDataChart) => {
+export default function HumidityChart(props: IDataChart) {
   return (
-    <View
-      style={{
-        paddingVertical: 20,
-        paddingLeft: 20,
-        backgroundColor: 'rgba(28, 28, 28, 0.7)',
-      }}
-    >
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginTop: -10,
-          marginBottom: 50,
-        }}
-      >
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 20,
-          }}
-        >
-          {i18n.t('Dashboard.Humidity')}
-        </Text>
-        <View
-          style={{
-            width: 80,
-            justifyContent: 'center',
-            marginRight: 15,
-          }}
-        >
-          <View
-            style={{
-              paddingVertical: 3,
-              borderRadius: 16,
-              backgroundColor: 'grey',
-            }}
-          >
-            <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>
+    <View style={styles.graphContainer}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerTitle}>{i18n.t('Dashboard.Humidity')}</Text>
+        <View style={styles.currentHumidityContainer}>
+          <View style={styles.currentHumidityBox}>
+            <Text style={styles.currentHumidityText}>
               {`${props.data.at(-1)?.value ?? '-'}%`}
             </Text>
           </View>
@@ -85,26 +53,12 @@ const HumidityChart = (props: IDataChart) => {
           autoAdjustPointerLabelPosition: false,
           pointerLabelComponent: (items: typeof props.data) => {
             return (
-              <View
-                style={{
-                  height: 90,
-                  width: 80,
-                  justifyContent: 'center',
-                  marginTop: -50,
-                  marginLeft: -40,
-                }}
-              >
-                <View
-                  style={{
-                    paddingVertical: 3,
-                    borderRadius: 16,
-                    backgroundColor: 'grey',
-                  }}
-                >
-                  <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>
+              <View style={styles.pointerContainer}>
+                <View style={styles.pointerBox}>
+                  <Text style={styles.currentHumidityText}>
                     {items[0].value + '%'}
                   </Text>
-                  <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>
+                  <Text style={styles.currentHumidityText}>
                     {items[0].timestamp.split(' ')[0]}
                   </Text>
                 </View>
@@ -115,6 +69,49 @@ const HumidityChart = (props: IDataChart) => {
       />
     </View>
   );
-};
+}
 
-export default HumidityChart;
+const styles = StyleSheet.create({
+  graphContainer: {
+    paddingVertical: 20,
+    paddingLeft: 20,
+    backgroundColor: 'rgba(28, 28, 28, 0.7)',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: -10,
+    marginBottom: 50,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 20,
+  },
+  currentHumidityContainer: {
+    width: 80,
+    justifyContent: 'center',
+    marginRight: 15,
+  },
+  currentHumidityBox: {
+    paddingVertical: 3,
+    borderRadius: 16,
+    backgroundColor: 'rgb(75, 67, 86)',
+  },
+  currentHumidityText: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'rgb(234, 222, 244)',
+  },
+  pointerContainer: {
+    height: 90,
+    width: 80,
+    justifyContent: 'center',
+    marginTop: -50,
+    marginLeft: -40,
+  },
+  pointerBox: {
+    paddingVertical: 3,
+    borderRadius: 16,
+    backgroundColor: 'rgb(75, 67, 86)',
+  },
+});
