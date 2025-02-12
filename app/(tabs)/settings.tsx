@@ -5,7 +5,11 @@ import { FAB, Switch, Text } from 'react-native-paper';
 import { useSession } from '@/contexts/sessionContext';
 
 import i18n from '@/i18n';
-import { useControllerConfig, useManageController } from '@/api/queries';
+import {
+  useControllerConfig,
+  useManageController,
+  useResetMicro,
+} from '@/api/queries';
 import { useEffect, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
@@ -18,6 +22,8 @@ export default function SettingsScreen() {
   const queryClient = useQueryClient();
 
   const manageController = useManageController();
+
+  const restartMicro = useResetMicro();
 
   const { data: controllerConfigData, isLoading: isControllerConfigLoading } =
     useControllerConfig();
@@ -35,6 +41,10 @@ export default function SettingsScreen() {
         },
       },
     );
+  };
+
+  const onRestart = () => {
+    restartMicro.mutate();
   };
 
   const onToggleSwitch = () => {
@@ -119,6 +129,19 @@ export default function SettingsScreen() {
             onPress={onStop}
           />
         </View>
+
+        <View style={styles.cardContainer}>
+          <Text variant="titleLarge">{i18n.t('Settings.Buttons.Restart')}</Text>
+          <FAB
+            mode="flat"
+            variant="primary"
+            style={styles.restartButton}
+            color="rgb(224, 195, 163)"
+            size="medium"
+            icon="restore-alert"
+            onPress={onRestart}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -147,5 +170,8 @@ const styles = StyleSheet.create({
   },
   switch: {
     transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }],
+  },
+  restartButton: {
+    backgroundColor: 'rgb(83, 59, 19)',
   },
 });
