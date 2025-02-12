@@ -57,6 +57,8 @@ export function SSEProvider({ children }: PropsWithChildren) {
   );
 
   useEffect(() => {
+    if (!session) return;
+
     const es = new EventSource<CustomEvents>(`http://${session}/events`);
 
     setEventSource(es);
