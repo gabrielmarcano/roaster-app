@@ -72,7 +72,10 @@ export default function RootLayout() {
           <PaperProvider theme={paperTheme}>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
+              <Stack.Screen
+                name="+not-found"
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="sign-in" options={{ headerShown: false }} />
             </Stack>
             <StatusBar style="auto" />
