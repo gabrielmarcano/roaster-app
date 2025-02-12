@@ -1,14 +1,17 @@
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
-
-import { FAB } from 'react-native-paper';
-// import { Button } from 'react-native-paper';
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { useSSE } from '@/contexts/sseContext';
 
 import { useEffect, useState } from 'react';
 import { useUpdateTimer } from '@/api/queries';
-// import i18n from '@/i18n';
 import CircularProgress from '@/components/CircularProgress';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TimerScreen() {
   const { eventSource, time } = useSSE();
@@ -29,6 +32,7 @@ export default function TimerScreen() {
     setRefreshing(true);
     eventSource?.close();
     eventSource?.open();
+    setPercentage(0);
     setRefreshing(false);
   };
 
@@ -59,45 +63,33 @@ export default function TimerScreen() {
               .toISOString()
               .slice(11, 19)}
           />
-          {/* <View style={styles.buttonsContainer}>
-            <Button
-              mode="contained-tonal"
-              onPress={() => {
-                handleReduceTime();
-              }}
-            >
-              {i18n.t('Timer.Buttons.ReduceTime')}
-            </Button>
-            <Button
-              mode="contained-tonal"
-              onPress={() => {
-                handleAddTime();
-              }}
-            >
-              {i18n.t('Timer.Buttons.AddTime')}
-            </Button>
-          </View> */}
           <View style={styles.buttonsContainer}>
-            <FAB
-              mode="flat"
-              variant="secondary"
-              size="medium"
-              icon="rewind-60"
+            <TouchableOpacity
               style={styles.icon}
               onPress={() => {
                 handleReduceTime();
               }}
-            />
-            <FAB
-              mode="flat"
-              variant="secondary"
-              size="medium"
-              icon="fast-forward-60"
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons
+                name="rewind-60"
+                size={30}
+                color="rgb(234,222,244)"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
               style={styles.icon}
               onPress={() => {
                 handleAddTime();
               }}
-            />
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons
+                name="fast-forward-60"
+                size={30}
+                color="rgb(234,222,244)"
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -130,6 +122,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   icon: {
-    paddingHorizontal: 38,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 55,
+    width: 120,
+    backgroundColor: 'rgb(75, 67, 86)',
   },
 });
