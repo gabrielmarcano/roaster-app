@@ -17,7 +17,7 @@ export default function TimerScreen() {
   const { eventSource, time } = useSSE();
 
   const [refreshing, setRefreshing] = useState(false);
-  const [percentage, setPercentage] = useState(100);
+  const [percentage, setPercentage] = useState(0);
 
   const updateTimer = useUpdateTimer();
 
@@ -74,7 +74,7 @@ export default function TimerScreen() {
               <MaterialCommunityIcons
                 name="rewind-60"
                 size={30}
-                color="rgb(234,222,244)"
+                color="rgb(234, 222, 244)"
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -87,7 +87,7 @@ export default function TimerScreen() {
               <MaterialCommunityIcons
                 name="fast-forward-60"
                 size={30}
-                color="rgb(234,222,244)"
+                color="rgb(234, 222, 244)"
               />
             </TouchableOpacity>
           </View>
