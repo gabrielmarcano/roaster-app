@@ -16,11 +16,10 @@ import {
   useControllerConfig,
   useDeleteInternalConfig,
   useInternalConfig,
-  useManageController,
   useUpdateControllerConfig,
   useUpdateInternalConfig,
 } from '@/api/queries';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -29,7 +28,6 @@ import { IInternalConfig } from '@/api/types';
 
 export default function ControllersScreen() {
   const [refreshing, setRefreshing] = useState(false);
-  const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   const [useConfigDialogVisible, setUseConfigDialogVisible] = useState(false);
   const [addConfigDialogVisible, setAddConfigDialogVisible] = useState(false);
@@ -62,8 +60,6 @@ export default function ControllersScreen() {
   } = useControllerConfig();
 
   const updateControllerConfig = useUpdateControllerConfig();
-
-  const manageController = useManageController();
 
   const {
     data: internalConfigData,
@@ -139,36 +135,6 @@ export default function ControllersScreen() {
     );
   };
 
-  const onStop = () => {
-    manageController.mutate(
-      {
-        action: 'stop',
-      },
-      {
-        onSuccess() {
-          queryClient.invalidateQueries({
-            queryKey: ['fetchControllerConfig'],
-          });
-        },
-      },
-    );
-  };
-
-  const onToggleSwitch = () => {
-    manageController.mutate(
-      {
-        action: isSwitchOn ? 'deactivate' : 'activate',
-      },
-      {
-        onSuccess() {
-          queryClient.invalidateQueries({
-            queryKey: ['fetchControllerConfig'],
-          });
-        },
-      },
-    );
-  };
-
   const onSaveConfig = () => {
     if (!newConfigName || !newConfigTemperature || !newConfigTime) {
       hideAddDialog();
@@ -208,12 +174,6 @@ export default function ControllersScreen() {
       },
     });
   };
-
-  // Effects
-
-  useEffect(() => {
-    setIsSwitchOn(controllerConfigData?.data.status === 'on' ? true : false);
-  }, [controllerConfigData]);
 
   return (
     <View style={styles.wrapper}>
@@ -310,34 +270,6 @@ export default function ControllersScreen() {
         </View>
 
         <View style={styles.cardContainer}>
-          <Text variant="titleLarge">{i18n.t('Controller.StopSystem')}</Text>
-          <Button
-            mode="contained"
-            onPress={onStop}
-            disabled={isControllerConfigLoading}
-          >
-            {i18n.t('Controller.Buttons.StopController')}
-          </Button>
-        </View>
-
-        <View style={styles.cardContainer}>
-          <Text variant="titleLarge">
-            {i18n.t('Controller.ActivateSystem')}
-          </Text>
-          <View style={styles.switchContainer}>
-            <Text variant="labelLarge">
-              {i18n.t('Controller.Buttons.ActivateController')}:
-            </Text>
-            <Switch
-              value={isSwitchOn}
-              onValueChange={onToggleSwitch}
-              disabled={isControllerConfigLoading}
-              style={styles.switch}
-            />
-          </View>
-        </View>
-
-        <View style={styles.cardContainer}>
           <Text variant="titleLarge">{i18n.t('Controller.ControlMotors')}</Text>
           <View style={styles.switchContainer}>
             <View style={styles.switchMotorContainer}>
@@ -388,12 +320,14 @@ export default function ControllersScreen() {
                   defaultValue={startingTemperature}
                   placeholder={i18n.t('Controller.TemperaturePlaceholder')}
                   onChangeText={(text) => setStartingTemperature(text)}
+                  keyboardType="phone-pad"
                   right={<TextInput.Affix text="°C" />}
                 />
                 <TextInput
                   defaultValue={time}
                   placeholder={i18n.t('Controller.TimePlaceholder')}
                   onChangeText={(text) => setTime(text)}
+                  keyboardType="phone-pad"
                   right={<TextInput.Affix text="s" />}
                 />
               </Dialog.Content>
@@ -426,12 +360,14 @@ export default function ControllersScreen() {
                   defaultValue={newConfigTemperature}
                   placeholder={i18n.t('Controller.TemperaturePlaceholder')}
                   onChangeText={(text) => setNewConfigTemperature(text)}
+                  keyboardType="phone-pad"
                   right={<TextInput.Affix text="°C" />}
                 />
                 <TextInput
                   defaultValue={newConfigTime}
                   placeholder={i18n.t('Controller.TimePlaceholder')}
                   onChangeText={(text) => setNewConfigTime(text)}
+                  keyboardType="phone-pad"
                   right={<TextInput.Affix text="s" />}
                 />
               </Dialog.Content>
@@ -490,7 +426,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardContainer: {
-    // width: '85%',
     width: '90%',
     padding: 32,
     // backgroundColor: 'rgb(50, 47, 51)',
@@ -510,6 +445,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 16,
   },
   switch: {
     transform: [{ scaleX: 1.6 }, { scaleY: 1.6 }],

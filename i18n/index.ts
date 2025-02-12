@@ -18,8 +18,6 @@ const translations = {
       Status: 'Status',
       StartingTemperature: 'Starting Temperature',
       Time: 'Time',
-      StopSystem: 'Stop System',
-      ActivateSystem: 'Activate System',
       ControlMotors: 'Control Motors',
       SavedConfigurations: 'Saved Configurations',
       NamePlaceholder: 'Set the name',
@@ -39,8 +37,6 @@ const translations = {
       },
       Buttons: {
         UseConfiguration: 'Use configuration',
-        ActivateController: 'Activate controller',
-        StopController: 'Stop controller',
         Motor1: 'Motor 1',
         Motor2: 'Motor 2',
         Motor3: 'Motor 3',
@@ -52,10 +48,14 @@ const translations = {
         ReduceTime: 'Reduce time',
       },
     },
-    Settings: {},
+    Settings: {
+      Buttons: {
+        ForceStop: 'Force Stop',
+        ActivateSystem: 'Activate System',
+      },
+    },
     Loading: 'Loading',
     Start: 'Start',
-    SignOut: 'Sign Out',
   },
   es: {
     Tabs: {
@@ -73,8 +73,6 @@ const translations = {
       Status: 'Estado',
       StartingTemperature: 'Temperatura de inicio',
       Time: 'Tiempo',
-      StopSystem: 'Detener Sistema',
-      ActivateSystem: 'Activar Sistema',
       ControlMotors: 'Controlar Motores',
       SavedConfigurations: 'Configuraciones guardadas',
       NamePlaceholder: 'Introduce el nombre',
@@ -93,8 +91,6 @@ const translations = {
       },
       Buttons: {
         UseConfiguration: 'Usar configuración',
-        ActivateController: 'Activar sistema',
-        StopController: 'Detener sistema',
         Motor1: 'Motor 1',
         Motor2: 'Motor 2',
         Motor3: 'Motor 3',
@@ -106,10 +102,14 @@ const translations = {
         ReduceTime: 'Reducir tiempo',
       },
     },
-    Settings: {},
+    Settings: {
+      Buttons: {
+        ForceStop: 'Forzar Detención',
+        ActivateSystem: 'Activar Sistema',
+      },
+    },
     Loading: 'Cargando',
     Start: 'Empezar',
-    SignOut: 'Cerrar Sesión',
   },
 };
 
