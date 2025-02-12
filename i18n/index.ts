@@ -3,6 +3,12 @@ import { I18n } from 'i18n-js';
 
 const translations = {
   en: {
+    SignIn: {
+      Start: 'Start',
+      EnterYourIP: 'Enter the IP address',
+      Example: 'Ex: 192.168.1.10',
+      InvalidIP: 'Invalid IP address.',
+    },
     Tabs: {
       Dashboard: 'Dashboard',
       Controllers: 'Controllers',
@@ -55,9 +61,14 @@ const translations = {
       },
     },
     Loading: 'Loading',
-    Start: 'Start',
   },
   es: {
+    SignIn: {
+      Start: 'Iniciar',
+      EnterYourIP: 'Introduce la dirección IP',
+      Example: 'Ejemplo: 192.168.1.10',
+      InvalidIP: 'La dirección IP no es válida.',
+    },
     Tabs: {
       Dashboard: 'Gráficas',
       Controllers: 'Sistema',
@@ -109,7 +120,6 @@ const translations = {
       },
     },
     Loading: 'Cargando',
-    Start: 'Empezar',
   },
 };
 
