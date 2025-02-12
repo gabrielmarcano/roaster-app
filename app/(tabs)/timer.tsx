@@ -1,12 +1,13 @@
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { Button } from 'react-native-paper';
+import { FAB } from 'react-native-paper';
+// import { Button } from 'react-native-paper';
 
 import { useSSE } from '@/contexts/sseContext';
 
 import { useEffect, useState } from 'react';
 import { useUpdateTimer } from '@/api/queries';
-import i18n from '@/i18n';
+// import i18n from '@/i18n';
 import CircularProgress from '@/components/CircularProgress';
 
 export default function TimerScreen() {
@@ -58,7 +59,7 @@ export default function TimerScreen() {
               .toISOString()
               .slice(11, 19)}
           />
-          <View style={styles.buttonsContainer}>
+          {/* <View style={styles.buttonsContainer}>
             <Button
               mode="contained-tonal"
               onPress={() => {
@@ -75,6 +76,28 @@ export default function TimerScreen() {
             >
               {i18n.t('Timer.Buttons.AddTime')}
             </Button>
+          </View> */}
+          <View style={styles.buttonsContainer}>
+            <FAB
+              mode="flat"
+              variant="secondary"
+              size="medium"
+              icon="rewind-60"
+              style={styles.icon}
+              onPress={() => {
+                handleReduceTime();
+              }}
+            />
+            <FAB
+              mode="flat"
+              variant="secondary"
+              size="medium"
+              icon="fast-forward-60"
+              style={styles.icon}
+              onPress={() => {
+                handleAddTime();
+              }}
+            />
           </View>
         </View>
       </ScrollView>
@@ -105,5 +128,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  icon: {
+    paddingHorizontal: 38,
   },
 });

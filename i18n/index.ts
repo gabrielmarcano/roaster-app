@@ -50,14 +50,15 @@ const translations = {
     },
     Timer: {
       Buttons: {
-        AddTime: 'Add time',
-        ReduceTime: 'Reduce time',
+        // AddTime: 'Add time',
+        // ReduceTime: 'Reduce time',
       },
     },
     Settings: {
       Buttons: {
-        ForceStop: 'Force Stop',
         ActivateSystem: 'Activate System',
+        ForceStop: 'Force Stop',
+        Restart: 'Restart',
       },
     },
     Loading: 'Loading',
@@ -109,14 +110,15 @@ const translations = {
     },
     Timer: {
       Buttons: {
-        AddTime: 'Añadir tiempo',
-        ReduceTime: 'Reducir tiempo',
+        // AddTime: 'Añadir tiempo',
+        // ReduceTime: 'Reducir tiempo',
       },
     },
     Settings: {
       Buttons: {
-        ForceStop: 'Forzar Detención',
         ActivateSystem: 'Activar Sistema',
+        ForceStop: 'Forzar Detención',
+        Restart: 'Reiniciar',
       },
     },
     Loading: 'Cargando',
@@ -132,6 +134,6 @@ i18n.locale = getLocales()[0].languageCode ?? 'en';
 i18n.enableFallback = true;
 
 // Manually select a locale
-i18n.locale = 'es';
+// i18n.locale = 'es';
 
 export default i18n;
