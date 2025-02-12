@@ -5,6 +5,7 @@ import {
   getControllerConfig,
   getInternalConfig,
   manageController,
+  manageMotors,
   resetMicro,
   updateControllerConfig,
   updateInternalConfig,
@@ -14,6 +15,7 @@ import {
   IControllerConfig,
   IInternalConfig,
   IManageController,
+  IMotorStates,
   IUpdateTimer,
 } from './types';
 
@@ -53,6 +55,11 @@ export const useUpdateControllerConfig = () =>
 export const useManageController = () =>
   useMutation({
     mutationFn: (body: IManageController) => manageController(body),
+  });
+
+export const useManageMotors = () =>
+  useMutation({
+    mutationFn: (body: Partial<IMotorStates>) => manageMotors(body),
   });
 
 export const useResetMicro = () =>

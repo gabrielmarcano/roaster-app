@@ -5,9 +5,9 @@ import {
   Button,
   DataTable,
   Dialog,
+  FAB,
   List,
   Portal,
-  Switch,
   Text,
   TextInput,
 } from 'react-native-paper';
@@ -16,17 +16,22 @@ import {
   useControllerConfig,
   useDeleteInternalConfig,
   useInternalConfig,
+  useManageMotors,
   useUpdateControllerConfig,
   useUpdateInternalConfig,
 } from '@/api/queries';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
 import i18n from '@/i18n';
 import { IInternalConfig } from '@/api/types';
+import { useSSE } from '@/contexts/sseContext';
+import { useFocusEffect } from 'expo-router';
 
 export default function ControllersScreen() {
+  const { states } = useSSE();
+
   const [refreshing, setRefreshing] = useState(false);
 
   const [useConfigDialogVisible, setUseConfigDialogVisible] = useState(false);
@@ -49,6 +54,10 @@ export default function ControllersScreen() {
   >(undefined);
   const [time, setTime] = useState<string | undefined>(undefined);
 
+  const [isMotorAOn, setIsMotorAOn] = useState(false);
+  const [isMotorBOn, setIsMotorBOn] = useState(false);
+  const [isMotorCOn, setIsMotorCOn] = useState(false);
+
   // Queries
 
   const queryClient = useQueryClient();
@@ -70,6 +79,8 @@ export default function ControllersScreen() {
   const updateInternalConfig = useUpdateInternalConfig();
 
   const deleteInternalConfig = useDeleteInternalConfig();
+
+  const manageMotors = useManageMotors();
 
   // Callbacks
 
@@ -175,6 +186,34 @@ export default function ControllersScreen() {
     });
   };
 
+  const onToggleMotor = (motor: 'a' | 'b' | 'c') => {
+    const map = {
+      a: isMotorAOn,
+      b: isMotorBOn,
+      c: isMotorCOn,
+    };
+
+    manageMotors.mutate({
+      [`motor_${motor}`]: map[motor] ? 0 : 1,
+    });
+  };
+
+  // Effects
+
+  useFocusEffect(
+    useCallback(() => {
+      if (states) {
+        console.log(states);
+        setIsMotorAOn(Boolean(states.motor_a));
+        setIsMotorBOn(Boolean(states.motor_b));
+        setIsMotorCOn(Boolean(states.motor_c));
+      }
+
+      // Return function is invoked whenever the route gets out of focus.
+      return () => {};
+    }, [states]),
+  );
+
   return (
     <View style={styles.wrapper}>
       <ScrollView
@@ -276,33 +315,42 @@ export default function ControllersScreen() {
               <Text variant="labelLarge">
                 {i18n.t('Controller.Buttons.Motor1')}
               </Text>
-              <Switch
-                value={false}
-                onValueChange={() => {}}
-                disabled={true}
-                style={styles.switch}
+              <FAB
+                mode="flat"
+                variant="tertiary"
+                size="medium"
+                icon={isMotorAOn ? 'fire' : 'fire-off'}
+                style={isMotorAOn ? styles.icon : {}}
+                color={isMotorAOn ? 'rgb(114, 169, 124)' : undefined}
+                onPress={() => onToggleMotor('a')}
               />
             </View>
             <View style={styles.switchMotorContainer}>
               <Text variant="labelLarge">
                 {i18n.t('Controller.Buttons.Motor2')}
               </Text>
-              <Switch
-                value={false}
-                onValueChange={() => {}}
-                disabled={true}
-                style={styles.switch}
+              <FAB
+                mode="flat"
+                variant="tertiary"
+                size="medium"
+                icon={isMotorBOn ? 'fan-speed-1' : 'fan-off'}
+                style={isMotorBOn ? styles.icon : {}}
+                color={isMotorBOn ? 'rgb(114, 169, 124)' : undefined}
+                onPress={() => onToggleMotor('b')}
               />
             </View>
             <View style={styles.switchMotorContainer}>
               <Text variant="labelLarge">
                 {i18n.t('Controller.Buttons.Motor3')}
               </Text>
-              <Switch
-                value={false}
-                onValueChange={() => {}}
-                disabled={true}
-                style={styles.switch}
+              <FAB
+                mode="flat"
+                variant="tertiary"
+                size="medium"
+                icon={isMotorCOn ? 'fan-speed-2' : 'fan-off'}
+                style={isMotorCOn ? styles.icon : {}}
+                color={isMotorCOn ? 'rgb(114, 169, 124)' : undefined}
+                onPress={() => onToggleMotor('c')}
               />
             </View>
           </View>
@@ -450,6 +498,9 @@ const styles = StyleSheet.create({
   switch: {
     transform: [{ scaleX: 1.6 }, { scaleY: 1.6 }],
     marginHorizontal: 24,
+  },
+  icon: {
+    backgroundColor: 'rgb(19, 73, 29)',
   },
   loadingContainer: {
     padding: 32,
