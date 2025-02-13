@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   ipText: {
+    fontSize: 19,
     fontFamily: 'monospace',
   },
   systemOnIcon: {
