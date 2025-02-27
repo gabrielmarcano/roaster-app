@@ -84,7 +84,6 @@ export default function SettingsScreen() {
             size="medium"
             icon="exit-to-app"
             onPress={() => {
-              console.log(session);
               signOut();
             }}
           />

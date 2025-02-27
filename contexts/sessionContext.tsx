@@ -47,6 +47,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
           setSession(ip);
         },
         signOut: () => {
+          // Perform sign-out logic here
+          configure({
+            baseURL: '',
+          });
+
           setSession(null);
         },
         session,
