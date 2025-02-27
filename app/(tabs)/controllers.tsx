@@ -104,7 +104,7 @@ export default function ControllersScreen() {
     setTime(undefined);
   };
 
-  const showUseDialog = (config: IInternalConfig[keyof IInternalConfig]) => {
+  const showUseDialog = (config: IInternalConfig) => {
     setStartingTemperature(String(config.starting_temperature));
     setTime(String(config.time));
     setUseConfigDialogVisible(true);
@@ -157,10 +157,12 @@ export default function ControllersScreen() {
 
     updateInternalConfig.mutate(
       {
-        [newConfigName]: {
-          starting_temperature: Number(newConfigTemperature),
-          time: Number(newConfigTime),
-        },
+        name: newConfigName
+          .trim()
+          .normalize('NFD')
+          .replaceAll(/[\u0300-\u036f]/g, ''),
+        starting_temperature: Number(newConfigTemperature),
+        time: Number(newConfigTime),
       },
       {
         onSuccess() {
@@ -235,16 +237,16 @@ export default function ControllersScreen() {
             }}
           >
             {internalConfigData?.data &&
-              Object.keys(internalConfigData?.data).map((key) => (
+              internalConfigData?.data.map((config) => (
                 <List.Item
-                  key={key}
-                  title={key}
+                  key={config.name}
+                  title={config.name}
                   style={styles.listItem}
                   left={(props) => <List.Icon {...props} icon="minus-thick" />}
-                  onLongPress={() => showDeleteDialog(key)}
-                  onPress={() => showUseDialog(internalConfigData?.data[key])}
-                  description={`${i18n.t('Controller.StartingTemperature')}: ${internalConfigData?.data[key].starting_temperature}, ${i18n.t('Controller.Time')}: ${new Date(
-                    (internalConfigData?.data[key].time ?? 0) * 1000,
+                  onLongPress={() => showDeleteDialog(config.name)}
+                  onPress={() => showUseDialog(config)}
+                  description={`${i18n.t('Controller.StartingTemperature')}: ${config.starting_temperature}, ${i18n.t('Controller.Time')}: ${new Date(
+                    (config.time ?? 0) * 1000,
                   )
                     .toISOString()
                     .slice(11, 19)}`}

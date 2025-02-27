@@ -31,14 +31,17 @@ export interface IReadings {
   time_values: ITimer;
   motor_states: IMotorStates;
 }
-export interface IInternalConfig {
-  [key: string]: Omit<IControllerConfig, 'status'>;
+export interface IInternalConfig extends TemperatureTime {
+  name: string;
 }
 
-export interface IControllerConfig {
+export interface IControllerConfig extends TemperatureTime {
+  status: 'on' | 'off';
+}
+
+interface TemperatureTime {
   starting_temperature: number;
   time: number;
-  status: 'on' | 'off';
 }
 
 export interface IManageController {
