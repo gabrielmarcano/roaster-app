@@ -39,6 +39,8 @@ export default function ControllersScreen() {
   const [deleteConfigDialogVisible, setDeleteConfigDialogVisible] =
     useState(false);
 
+  const [newConfigError, setNewConfigError] = useState(false);
+
   const [newConfigName, setNewConfigName] = useState<string | undefined>(
     undefined,
   );
@@ -102,6 +104,8 @@ export default function ControllersScreen() {
     setNewConfigTime(undefined);
     setStartingTemperature(undefined);
     setTime(undefined);
+
+    setNewConfigError(false);
   };
 
   const showUseDialog = (config: IInternalConfig) => {
@@ -170,6 +174,10 @@ export default function ControllersScreen() {
             queryKey: ['fetchInternalConfig'],
           });
           onCancelDialog();
+        },
+        onError() {
+          console.log('Error saving config');
+          setNewConfigError(true);
         },
       },
     );
@@ -397,9 +405,18 @@ export default function ControllersScreen() {
               <Dialog.Content style={styles.addNewConfigDialogContent}>
                 <TextInput
                   defaultValue={newConfigName}
+                  error={newConfigError}
                   placeholder={i18n.t('Controller.NamePlaceholder')}
-                  onChangeText={(text) => setNewConfigName(text)}
+                  onChangeText={(text) => {
+                    if (newConfigName) setNewConfigError(false);
+                    setNewConfigName(text);
+                  }}
                 />
+                {newConfigError && (
+                  <Text style={styles.errorText}>
+                    {`Error: ${i18n.t('Controller.Dialog.ConfigurationWithThisNameAlreadyExists')}.`}
+                  </Text>
+                )}
                 <TextInput
                   defaultValue={newConfigTemperature}
                   placeholder={i18n.t('Controller.TemperaturePlaceholder')}
@@ -525,5 +542,10 @@ const styles = StyleSheet.create({
   },
   tableCenter: {
     justifyContent: 'center',
+  },
+  errorText: {
+    marginTop: -8,
+    marginLeft: 8,
+    color: 'rgba(235, 127, 127, 0.7)',
   },
 });

@@ -31,6 +31,8 @@ const translations = {
       TimePlaceholder: 'Set the time in seconds',
       AddNewConfiguration: 'Add new configuration',
       Dialog: {
+        ConfigurationWithThisNameAlreadyExists:
+          'a configuration with this name already exists',
         UseConfiguration: 'Use this configuration',
         NewConfiguration: 'New configuration',
         DeleteConfiguration: 'Delete configuration',
@@ -92,6 +94,8 @@ const translations = {
       TimePlaceholder: 'Introduce el tiempo en segundos',
       AddNewConfiguration: 'Anadir nueva configuración',
       Dialog: {
+        ConfigurationWithThisNameAlreadyExists:
+          'una configuración con este nombre ya existe',
         UseConfiguration: 'Usar esta configuración',
         NewConfiguration: 'Nueva configuración',
         DeleteConfiguration: 'Borrar configuración',
