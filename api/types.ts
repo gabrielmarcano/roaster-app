@@ -10,20 +10,15 @@ export interface ITimer {
   current_time: number;
 }
 
-// export type IUpdateTimer = { action: 'add' | 'reduce' } & (
-//   | Pick<ITimer, 'total_time'>
-//   | Pick<ITimer, 'current_time'>
-// );
-
 export interface IUpdateTimer {
   action: 'add' | 'reduce' | 'change';
   time?: number;
 }
 
 export interface IMotorStates {
-  motor_a: 0 | 1;
-  motor_b: 0 | 1;
-  motor_c: 0 | 1;
+  motor_a: boolean;
+  motor_b: boolean;
+  motor_c: boolean;
 }
 
 export interface IReadings {
@@ -31,17 +26,23 @@ export interface IReadings {
   time_values: ITimer;
   motor_states: IMotorStates;
 }
-export interface IInternalConfig extends TemperatureTime {
+export interface IConfigEntry {
+  starting_temperature: number;
+  time: number;
+}
+
+export interface IInternalConfig extends IConfigEntry {
   name: string;
 }
 
-export interface IControllerConfig extends TemperatureTime {
+export interface IControllerConfig extends IConfigEntry {
   status: 'on' | 'off';
 }
 
-interface TemperatureTime {
-  starting_temperature: number;
-  time: number;
+export type IConfigMap = Record<string, IConfigEntry>;
+
+export interface IResetResponse {
+  message: string;
 }
 
 export interface IManageController {

@@ -12,14 +12,10 @@ import {
 } from '@/api/queries';
 import { useEffect, useState } from 'react';
 
-import { useQueryClient } from '@tanstack/react-query';
-
 export default function SettingsScreen() {
   const { session, signOut } = useSession();
 
   const [isSystemOn, setIsSwitchOn] = useState(false);
-
-  const queryClient = useQueryClient();
 
   const manageController = useManageController();
 
@@ -29,18 +25,7 @@ export default function SettingsScreen() {
     useControllerConfig();
 
   const onStop = () => {
-    manageController.mutate(
-      {
-        action: 'stop',
-      },
-      {
-        onSuccess() {
-          queryClient.invalidateQueries({
-            queryKey: ['fetchControllerConfig'],
-          });
-        },
-      },
-    );
+    manageController.mutate({ action: 'stop' });
   };
 
   const onRestart = () => {
@@ -48,22 +33,13 @@ export default function SettingsScreen() {
   };
 
   const onToggleSystem = () => {
-    manageController.mutate(
-      {
-        action: isSystemOn ? 'deactivate' : 'activate',
-      },
-      {
-        onSuccess() {
-          queryClient.invalidateQueries({
-            queryKey: ['fetchControllerConfig'],
-          });
-        },
-      },
-    );
+    manageController.mutate({
+      action: isSystemOn ? 'deactivate' : 'activate',
+    });
   };
 
   useEffect(() => {
-    setIsSwitchOn(controllerConfigData?.data.status === 'on' ? true : false);
+    setIsSwitchOn(controllerConfigData?.data.status === 'on');
   }, [controllerConfigData]);
 
   return (

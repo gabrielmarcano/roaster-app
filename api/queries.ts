@@ -1,4 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import {
   deleteInternalConfig,
@@ -11,17 +15,10 @@ import {
   updateInternalConfig,
   updateTimer,
 } from '@/api/api';
-import {
-  IControllerConfig,
-  IInternalConfig,
-  IManageController,
-  IMotorStates,
-  IUpdateTimer,
-} from './types';
 
 export const useUpdateTimer = () =>
   useMutation({
-    mutationFn: (body: IUpdateTimer) => updateTimer(body),
+    mutationFn: updateTimer,
   });
 
 export const useInternalConfig = () =>
@@ -30,15 +27,25 @@ export const useInternalConfig = () =>
     queryFn: getInternalConfig,
   });
 
-export const useUpdateInternalConfig = () =>
-  useMutation({
-    mutationFn: (body: IInternalConfig) => updateInternalConfig(body),
+export const useUpdateInternalConfig = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateInternalConfig,
+    onSuccess(data) {
+      queryClient.setQueryData(['fetchInternalConfig'], data);
+    },
   });
+};
 
-export const useDeleteInternalConfig = () =>
-  useMutation({
-    mutationFn: (name: string) => deleteInternalConfig(name),
+export const useDeleteInternalConfig = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteInternalConfig,
+    onSuccess(data) {
+      queryClient.setQueryData(['fetchInternalConfig'], data);
+    },
   });
+};
 
 export const useControllerConfig = () =>
   useQuery({
@@ -46,23 +53,32 @@ export const useControllerConfig = () =>
     queryFn: getControllerConfig,
   });
 
-export const useUpdateControllerConfig = () =>
-  useMutation({
-    mutationFn: (body: Partial<IControllerConfig>) =>
-      updateControllerConfig(body),
+export const useUpdateControllerConfig = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateControllerConfig,
+    onSuccess(data) {
+      queryClient.setQueryData(['fetchControllerConfig'], data);
+    },
   });
+};
 
-export const useManageController = () =>
-  useMutation({
-    mutationFn: (body: IManageController) => manageController(body),
+export const useManageController = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: manageController,
+    onSuccess(data) {
+      queryClient.setQueryData(['fetchControllerConfig'], data);
+    },
   });
+};
 
 export const useManageMotors = () =>
   useMutation({
-    mutationFn: (body: Partial<IMotorStates>) => manageMotors(body),
+    mutationFn: manageMotors,
   });
 
 export const useResetMicro = () =>
   useMutation({
-    mutationFn: () => resetMicro(),
+    mutationFn: resetMicro,
   });

@@ -22,10 +22,8 @@ import {
 } from '@/api/queries';
 import { useCallback, useState } from 'react';
 
-import { useQueryClient } from '@tanstack/react-query';
-
 import i18n from '@/i18n';
-import { IInternalConfig } from '@/api/types';
+import { IConfigEntry } from '@/api/types';
 import { useSSE } from '@/contexts/sseContext';
 import { useFocusEffect } from 'expo-router';
 
@@ -62,8 +60,6 @@ export default function ControllersScreen() {
 
   // Queries
 
-  const queryClient = useQueryClient();
-
   const {
     data: controllerConfigData,
     isLoading: isControllerConfigLoading,
@@ -86,10 +82,9 @@ export default function ControllersScreen() {
 
   // Callbacks
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    refetchControllerConfig();
-    refetchInternalConfig();
+    await Promise.all([refetchControllerConfig(), refetchInternalConfig()]);
     setRefreshing(false);
   };
 
@@ -108,7 +103,7 @@ export default function ControllersScreen() {
     setNewConfigError(false);
   };
 
-  const showUseDialog = (config: IInternalConfig) => {
+  const showUseDialog = (config: IConfigEntry) => {
     setStartingTemperature(String(config.starting_temperature));
     setTime(String(config.time));
     setUseConfigDialogVisible(true);
@@ -141,9 +136,6 @@ export default function ControllersScreen() {
       },
       {
         onSuccess() {
-          queryClient.invalidateQueries({
-            queryKey: ['fetchControllerConfig'],
-          });
           onCancelDialog();
         },
       },
@@ -170,9 +162,6 @@ export default function ControllersScreen() {
       },
       {
         onSuccess() {
-          queryClient.invalidateQueries({
-            queryKey: ['fetchInternalConfig'],
-          });
           onCancelDialog();
         },
         onError() {
@@ -188,9 +177,6 @@ export default function ControllersScreen() {
 
     deleteInternalConfig.mutate(name, {
       onSuccess() {
-        queryClient.invalidateQueries({
-          queryKey: ['fetchInternalConfig'],
-        });
         onCancelDialog();
       },
     });
@@ -204,7 +190,7 @@ export default function ControllersScreen() {
     };
 
     manageMotors.mutate({
-      [`motor_${motor}`]: map[motor] ? 0 : 1,
+      [`motor_${motor}`]: !map[motor],
     });
   };
 
@@ -213,9 +199,9 @@ export default function ControllersScreen() {
   useFocusEffect(
     useCallback(() => {
       if (states) {
-        setIsMotorAOn(Boolean(states.motor_a));
-        setIsMotorBOn(Boolean(states.motor_b));
-        setIsMotorCOn(Boolean(states.motor_c));
+        setIsMotorAOn(states.motor_a);
+        setIsMotorBOn(states.motor_b);
+        setIsMotorCOn(states.motor_c);
       }
 
       // Return function is invoked whenever the route gets out of focus.
@@ -245,13 +231,13 @@ export default function ControllersScreen() {
             }}
           >
             {internalConfigData?.data &&
-              internalConfigData?.data.map((config) => (
+              Object.entries(internalConfigData.data).map(([name, config]) => (
                 <List.Item
-                  key={config.name}
-                  title={config.name}
+                  key={name}
+                  title={name}
                   style={styles.listItem}
                   left={(props) => <List.Icon {...props} icon="minus-thick" />}
-                  onLongPress={() => showDeleteDialog(config.name)}
+                  onLongPress={() => showDeleteDialog(name)}
                   onPress={() => showUseDialog(config)}
                   description={`${i18n.t('Controller.StartingTemperature')}: ${config.starting_temperature}, ${i18n.t('Controller.Time')}: ${new Date(
                     (config.time ?? 0) * 1000,
