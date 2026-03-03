@@ -1,10 +1,11 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { FAB, Text } from 'react-native-paper';
+import { Dialog, FAB, Portal, RadioButton, Text } from 'react-native-paper';
 
 import { useSession } from '@/contexts/sessionContext';
+import { useLocale } from '@/contexts/localeContext';
 
-import i18n from '@/i18n';
+import i18n, { availableLanguages, deviceLocale } from '@/i18n';
 import {
   useControllerConfig,
   useManageController,
@@ -14,8 +15,10 @@ import { useEffect, useState } from 'react';
 
 export default function SettingsScreen() {
   const { session, signOut } = useSession();
+  const { locale, isDeviceDefault, setLocale } = useLocale();
 
   const [isSystemOn, setIsSwitchOn] = useState(false);
+  const [langDialogVisible, setLangDialogVisible] = useState(false);
 
   const manageController = useManageController();
 
@@ -42,6 +45,9 @@ export default function SettingsScreen() {
     setIsSwitchOn(controllerConfigData?.data.status === 'on');
   }, [controllerConfigData]);
 
+  const currentLanguageName = availableLanguages[locale] ?? locale;
+  const deviceLanguageName = availableLanguages[deviceLocale] ?? deviceLocale;
+
   return (
     <View style={styles.wrapper}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
@@ -62,6 +68,20 @@ export default function SettingsScreen() {
             onPress={() => {
               signOut();
             }}
+          />
+        </View>
+
+        <View style={styles.cardContainer}>
+          <Text variant="titleLarge" style={styles.cardText}>
+            {i18n.t('Settings.Language')}
+          </Text>
+          <FAB
+            mode="flat"
+            variant="secondary"
+            size="medium"
+            icon="translate"
+            label={currentLanguageName}
+            onPress={() => setLangDialogVisible(true)}
           />
         </View>
 
@@ -109,6 +129,36 @@ export default function SettingsScreen() {
           />
         </View>
       </ScrollView>
+
+      <Portal>
+        <Dialog
+          visible={langDialogVisible}
+          onDismiss={() => setLangDialogVisible(false)}
+        >
+          <Dialog.Title>{i18n.t('Settings.Language')}</Dialog.Title>
+          <Dialog.Content>
+            <RadioButton.Group
+              value={isDeviceDefault ? '__device__' : locale}
+              onValueChange={(value) => {
+                if (value === '__device__') {
+                  setLocale(null);
+                } else {
+                  setLocale(value);
+                }
+                setLangDialogVisible(false);
+              }}
+            >
+              <RadioButton.Item
+                label={`${i18n.t('Settings.DeviceDefault')} (${deviceLanguageName})`}
+                value="__device__"
+              />
+              {Object.entries(availableLanguages).map(([code, name]) => (
+                <RadioButton.Item key={code} label={name} value={code} />
+              ))}
+            </RadioButton.Group>
+          </Dialog.Content>
+        </Dialog>
+      </Portal>
     </View>
   );
 }

@@ -10,9 +10,11 @@ import TabsHeader from '@/components/ui/TabsHeader';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import i18n from '@/i18n';
+import { useLocale } from '@/contexts/localeContext';
 
 export default function TabLayout() {
   const { session, isLoading } = useSession();
+  const { locale } = useLocale();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
@@ -33,6 +35,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      key={locale}
       tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
         // headerShown: false,

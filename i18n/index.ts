@@ -57,6 +57,8 @@ const translations = {
       },
     },
     Settings: {
+      Language: 'Language',
+      DeviceDefault: 'Device Default',
       Buttons: {
         ActivateSystem: 'Activate System',
         ForceStop: 'Force Stop',
@@ -119,6 +121,8 @@ const translations = {
       },
     },
     Settings: {
+      Language: 'Idioma',
+      DeviceDefault: 'Predeterminado del dispositivo',
       Buttons: {
         ActivateSystem: 'Activar Sistema',
         ForceStop: 'Forzar Detención',
@@ -131,13 +135,15 @@ const translations = {
 
 const i18n = new I18n(translations);
 
-// Set the locale once at the beginning of your app.
-i18n.locale = getLocales()[0].languageCode ?? 'en';
-
 // When a value is missing from a language it'll fall back to another language with the key present.
 i18n.enableFallback = true;
 
-// Manually select a locale
-// i18n.locale = 'es';
+export const availableLanguages: Record<string, string> = {
+  en: 'English',
+  es: 'Español',
+};
+
+export const deviceLocale =
+  getLocales()[0].languageCode ?? 'en';
 
 export default i18n;
