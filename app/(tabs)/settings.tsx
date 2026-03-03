@@ -90,7 +90,7 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.cardContainer}>
-          <Text variant="titleLarge">
+          <Text variant="titleLarge" style={styles.cardText}>
             {i18n.t('Settings.Buttons.ActivateSystem')}
           </Text>
           <FAB
@@ -107,7 +107,7 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.cardContainer}>
-          <Text variant="titleLarge">
+          <Text variant="titleLarge" style={styles.cardText}>
             {i18n.t('Settings.Buttons.ForceStop')}
           </Text>
           <FAB
@@ -121,7 +121,7 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.cardContainer}>
-          <Text variant="titleLarge">{i18n.t('Settings.Buttons.Restart')}</Text>
+          <Text variant="titleLarge" style={styles.cardText}>{i18n.t('Settings.Buttons.Restart')}</Text>
           <FAB
             mode="flat"
             variant="primary"
@@ -150,7 +150,8 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: '90%',
-    padding: 32,
+    paddingVertical: 24,
+    paddingHorizontal: 20,
     gap: 24,
     borderRadius: 16,
     backgroundColor: 'rgba(28, 28, 28, 0.7)',
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
   restartButton: {
     backgroundColor: 'rgb(83, 59, 19)',
   },
-  ipContainer: { flexDirection: 'row', alignItems: 'center' },
+  ipContainer: { flex: 1, flexShrink: 1, flexDirection: 'row', alignItems: 'center' },
   ipBox: {
     backgroundColor: 'rgba(13, 15, 8, 0.22)',
     borderRadius: 12,
@@ -177,6 +178,10 @@ const styles = StyleSheet.create({
   ipText: {
     fontSize: 19,
     fontFamily: 'monospace',
+  },
+  cardText: {
+    flex: 1,
+    flexShrink: 1,
   },
   systemOnIcon: {
     backgroundColor: 'rgb(19, 73, 29)',

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from 'react-native';
 
 import { useSSE } from '@/contexts/sseContext';
@@ -15,11 +16,19 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TimerScreen() {
   const { eventSource, time } = useSSE();
+  const { width: screenWidth } = useWindowDimensions();
 
   const [refreshing, setRefreshing] = useState(false);
   const [percentage, setPercentage] = useState(0);
 
   const updateTimer = useUpdateTimer();
+
+  const circleSize = Math.min(screenWidth * 0.75, 300);
+  const strokeWidth = Math.round(circleSize * 40 / 300);
+  const textSize = Math.round(circleSize * 45 / 300);
+  const buttonWidth = Math.round(circleSize * 0.38);
+  const buttonHeight = Math.round(circleSize * 0.17);
+  const iconSize = Math.round(circleSize * 30 / 300);
 
   const handleAddTime = () => {
     updateTimer.mutate({ action: 'add' });
@@ -55,17 +64,17 @@ export default function TimerScreen() {
             progressPercent={percentage}
             bgColor="rgba(86, 172, 206, 0.2)"
             pgColor="rgba(86, 172, 206, 1)"
-            textSize="45"
+            textSize={textSize}
             textColor="lightgray"
-            size={300}
-            strokeWidth={40}
+            size={circleSize}
+            strokeWidth={strokeWidth}
             text={new Date((time?.current_time ?? 0) * 1000)
               .toISOString()
               .slice(11, 19)}
           />
-          <View style={styles.buttonsContainer}>
+          <View style={[styles.buttonsContainer, { width: circleSize }]}>
             <TouchableOpacity
-              style={styles.icon}
+              style={[styles.icon, { width: buttonWidth, height: buttonHeight }]}
               onPress={() => {
                 handleReduceTime();
               }}
@@ -73,12 +82,12 @@ export default function TimerScreen() {
             >
               <MaterialCommunityIcons
                 name="rewind-60"
-                size={30}
+                size={iconSize}
                 color="rgb(234, 222, 244)"
               />
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.icon}
+              style={[styles.icon, { width: buttonWidth, height: buttonHeight }]}
               onPress={() => {
                 handleAddTime();
               }}
@@ -86,7 +95,7 @@ export default function TimerScreen() {
             >
               <MaterialCommunityIcons
                 name="fast-forward-60"
-                size={30}
+                size={iconSize}
                 color="rgb(234, 222, 244)"
               />
             </TouchableOpacity>
@@ -103,7 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(53, 54, 54, 1)',
   },
   contentContainer: {
-    flex: 1,
+    flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     padding: 16,
@@ -116,7 +125,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(28, 28, 28, 0.7)',
   },
   buttonsContainer: {
-    width: 300,
     paddingTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -125,8 +133,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 55,
-    width: 120,
     backgroundColor: 'rgb(75, 67, 86)',
   },
 });

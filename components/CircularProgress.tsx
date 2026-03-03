@@ -18,7 +18,7 @@ const CircularProgress = (props: {
   const svgProgress = 100 - props.progressPercent;
 
   return (
-    <View style={{ margin: 10 }}>
+    <View style={{ margin: 5 }}>
       <Svg width={size} height={size}>
         {/* Background Circle */}
         <Circle

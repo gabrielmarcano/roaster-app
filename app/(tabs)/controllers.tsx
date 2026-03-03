@@ -284,11 +284,9 @@ export default function ControllersScreen() {
                   <DataTable.Title>
                     {i18n.t('Controller.Status')}
                   </DataTable.Title>
-                  <View>
-                    <DataTable.Title style={styles.tableCenter}>
-                      {i18n.t('Controller.StartingTemperature')}
-                    </DataTable.Title>
-                  </View>
+                  <DataTable.Title style={styles.tableCenter}>
+                    {i18n.t('Controller.StartingTemperature')}
+                  </DataTable.Title>
                   <DataTable.Title numeric>
                     {i18n.t('Controller.Time')}
                   </DataTable.Title>
@@ -488,7 +486,8 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: '90%',
-    padding: 32,
+    paddingVertical: 24,
+    paddingHorizontal: 20,
     // backgroundColor: 'rgb(50, 47, 51)',
     backgroundColor: 'rgba(28, 28, 28, 0.7)',
     borderRadius: 16,

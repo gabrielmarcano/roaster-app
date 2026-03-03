@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 
 import { Text, TextInput, Button, Snackbar } from 'react-native-paper';
 import { useSession } from '@/contexts/sessionContext';
@@ -26,40 +26,45 @@ export default function SignIn() {
 
   return (
     <View style={[styles.wrapper, styles.background]}>
-      <View style={styles.container}>
-        <View style={styles.cardContainer}>
-          <Text variant="titleLarge">{i18n.t('SignIn.EnterYourIP')}</Text>
-          <View>
-            {/* TODO: Maybe add masked text input */}
-            <TextInput
-              mode="outlined"
-              value={ip}
-              placeholder={i18n.t('SignIn.Example')}
-              onChangeText={(text) => setIp(text)}
-              keyboardType="phone-pad"
-            />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboardAvoiding}
+      >
+        <View style={styles.container}>
+          <View style={styles.cardContainer}>
+            <Text variant="titleLarge">{i18n.t('SignIn.EnterYourIP')}</Text>
+            <View>
+              {/* TODO: Maybe add masked text input */}
+              <TextInput
+                mode="outlined"
+                value={ip}
+                placeholder={i18n.t('SignIn.Example')}
+                onChangeText={(text) => setIp(text)}
+                keyboardType="phone-pad"
+              />
+            </View>
+            <Button
+              mode="contained"
+              onPress={() => {
+                if (!checkIP(ip)) {
+                  onToggleSnackBar();
+                  return;
+                }
+
+                signIn(ip);
+                // Navigate after signing in. You may want to tweak this to ensure sign-in is
+                // successful before navigating.
+
+                // if (!client.defaults.baseURL?.includes('http')) return
+
+                router.replace('/(tabs)');
+              }}
+            >
+              {i18n.t('SignIn.Start')}
+            </Button>
           </View>
-          <Button
-            mode="contained"
-            onPress={() => {
-              if (!checkIP(ip)) {
-                onToggleSnackBar();
-                return;
-              }
-
-              signIn(ip);
-              // Navigate after signing in. You may want to tweak this to ensure sign-in is
-              // successful before navigating.
-
-              // if (!client.defaults.baseURL?.includes('http')) return
-
-              router.replace('/(tabs)');
-            }}
-          >
-            {i18n.t('SignIn.Start')}
-          </Button>
         </View>
-      </View>
+      </KeyboardAvoidingView>
       <Snackbar
         visible={visible}
         duration={4000}
@@ -87,17 +92,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  keyboardAvoiding: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     padding: 16,
     gap: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    height: '40%',
     width: '80%',
   },
   cardContainer: {
     width: '100%',
-    padding: 32,
+    padding: 24,
     backgroundColor: 'rgba(53, 54, 54, 1)',
     borderRadius: 16,
     gap: 24,

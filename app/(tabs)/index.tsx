@@ -3,10 +3,17 @@ import HumidityChart from '@/components/HumidityChart';
 import TemperatureChart from '@/components/TemperatureChart';
 import { useSSE } from '@/contexts/sseContext';
 import { useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 
 export default function HomeScreen() {
   const { eventSource, sensors } = useSSE();
+  const { width: screenWidth } = useWindowDimensions();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -53,6 +60,8 @@ export default function HomeScreen() {
     setRefreshing(false);
   };
 
+  const chartContainerWidth = screenWidth - 2 * 16;
+
   return (
     <View style={styles.wrapper}>
       <ScrollView
@@ -61,8 +70,8 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <TemperatureChart data={temperatureData} />
-        <HumidityChart data={humidityData} />
+        <TemperatureChart data={temperatureData} containerWidth={chartContainerWidth} />
+        <HumidityChart data={humidityData} containerWidth={chartContainerWidth} />
       </ScrollView>
     </View>
   );
@@ -74,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(53, 54, 54, 1)',
   },
   contentContainer: {
-    flex: 1,
+    flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'space-around',
     padding: 16,
