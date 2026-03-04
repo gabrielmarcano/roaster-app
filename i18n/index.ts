@@ -59,11 +59,24 @@ const translations = {
     Settings: {
       Language: 'Language',
       DeviceDefault: 'Device Default',
+      Notifications: {
+        Title: 'Notifications',
+        Enable: 'Enable Notifications',
+        Pre30: '30 minutes before',
+        Pre20: '20 minutes before',
+        Pre10: '10 minutes before',
+      },
       Buttons: {
         ActivateSystem: 'Activate System',
         ForceStop: 'Force Stop',
         Restart: 'Restart',
       },
+    },
+    Notifications: {
+      TimerFinished: 'Timer Finished',
+      TimerFinishedBody: 'Your roasting timer has finished!',
+      PreNotification: 'Timer Reminder',
+      MinutesRemaining: '%{minutes} minutes remaining',
     },
     Loading: 'Loading',
   },
@@ -123,11 +136,24 @@ const translations = {
     Settings: {
       Language: 'Idioma',
       DeviceDefault: 'Predeterminado del dispositivo',
+      Notifications: {
+        Title: 'Notificaciones',
+        Enable: 'Activar Notificaciones',
+        Pre30: '30 minutos antes',
+        Pre20: '20 minutos antes',
+        Pre10: '10 minutos antes',
+      },
       Buttons: {
         ActivateSystem: 'Activar Sistema',
         ForceStop: 'Forzar Detención',
         Restart: 'Reiniciar',
       },
+    },
+    Notifications: {
+      TimerFinished: 'Temporizador Finalizado',
+      TimerFinishedBody: '¡Tu temporizador de tueste ha terminado!',
+      PreNotification: 'Recordatorio del Temporizador',
+      MinutesRemaining: '%{minutes} minutos restantes',
     },
     Loading: 'Cargando',
   },

@@ -23,6 +23,7 @@ import { useEffect } from 'react';
 import { SessionProvider } from '@/contexts/sessionContext';
 import { SSEProvider } from '@/contexts/sseContext';
 import { LocaleProvider } from '@/contexts/localeContext';
+import { NotificationsProvider } from '@/contexts/notificationsContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 
@@ -68,9 +69,10 @@ export default function RootLayout() {
 
   return (
     <LocaleProvider>
-      <SessionProvider>
-        <QueryClientProvider client={queryClient}>
-          <SSEProvider>
+      <NotificationsProvider>
+        <SessionProvider>
+          <QueryClientProvider client={queryClient}>
+            <SSEProvider>
             <PaperProvider theme={paperTheme}>
               <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -82,9 +84,10 @@ export default function RootLayout() {
               </Stack>
               <StatusBar style="auto" />
             </PaperProvider>
-          </SSEProvider>
-        </QueryClientProvider>
-      </SessionProvider>
+            </SSEProvider>
+          </QueryClientProvider>
+        </SessionProvider>
+      </NotificationsProvider>
     </LocaleProvider>
   );
 }

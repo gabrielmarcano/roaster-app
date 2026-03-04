@@ -15,6 +15,7 @@ import {
 } from '@/api/types';
 import EventSource from 'react-native-sse';
 import { useSession } from './sessionContext';
+import { useNotificationScheduler } from '@/hooks/useNotificationScheduler';
 
 const SSEContext = createContext<{
   eventSource?: EventSource | undefined;
@@ -55,6 +56,8 @@ export function SSEProvider({ children }: PropsWithChildren) {
   const [controller, setController] = useState<IControllerConfig | undefined>(
     undefined,
   );
+
+  useNotificationScheduler(time);
 
   useEffect(() => {
     if (!session) return;

@@ -1,9 +1,10 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { Dialog, FAB, Portal, RadioButton, Text } from 'react-native-paper';
+import { Dialog, FAB, Portal, RadioButton, Switch, Text } from 'react-native-paper';
 
 import { useSession } from '@/contexts/sessionContext';
 import { useLocale } from '@/contexts/localeContext';
+import { useNotifications } from '@/contexts/notificationsContext';
 
 import i18n, { availableLanguages, deviceLocale } from '@/i18n';
 import {
@@ -16,6 +17,16 @@ import { useEffect, useState } from 'react';
 export default function SettingsScreen() {
   const { session, signOut } = useSession();
   const { locale, isDeviceDefault, setLocale } = useLocale();
+  const {
+    notificationsEnabled,
+    setNotificationsEnabled,
+    preNotif30,
+    setPreNotif30,
+    preNotif20,
+    setPreNotif20,
+    preNotif10,
+    setPreNotif10,
+  } = useNotifications();
 
   const [isSystemOn, setIsSwitchOn] = useState(false);
   const [langDialogVisible, setLangDialogVisible] = useState(false);
@@ -83,6 +94,50 @@ export default function SettingsScreen() {
             label={currentLanguageName}
             onPress={() => setLangDialogVisible(true)}
           />
+        </View>
+
+        <View style={styles.cardContainer}>
+          <Text variant="titleLarge" style={styles.cardText}>
+            {i18n.t('Settings.Notifications.Enable')}
+          </Text>
+          <Switch
+            value={notificationsEnabled}
+            onValueChange={setNotificationsEnabled}
+            style={styles.switch}
+          />
+        </View>
+
+        <View style={[styles.cardContainer, styles.preNotifContainer]}>
+          <View style={styles.preNotifRow}>
+            <Text variant="titleMedium" style={styles.cardText}>
+              {i18n.t('Settings.Notifications.Pre30')}
+            </Text>
+            <Switch
+              value={preNotif30}
+              onValueChange={setPreNotif30}
+              disabled={!notificationsEnabled}
+            />
+          </View>
+          <View style={styles.preNotifRow}>
+            <Text variant="titleMedium" style={styles.cardText}>
+              {i18n.t('Settings.Notifications.Pre20')}
+            </Text>
+            <Switch
+              value={preNotif20}
+              onValueChange={setPreNotif20}
+              disabled={!notificationsEnabled}
+            />
+          </View>
+          <View style={styles.preNotifRow}>
+            <Text variant="titleMedium" style={styles.cardText}>
+              {i18n.t('Settings.Notifications.Pre10')}
+            </Text>
+            <Switch
+              value={preNotif10}
+              onValueChange={setPreNotif10}
+              disabled={!notificationsEnabled}
+            />
+          </View>
         </View>
 
         <View style={styles.cardContainer}>
@@ -211,5 +266,14 @@ const styles = StyleSheet.create({
   },
   systemOnIcon: {
     backgroundColor: 'rgb(19, 73, 29)',
+  },
+  preNotifContainer: {
+    flexDirection: 'column',
+    gap: 16,
+  },
+  preNotifRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
