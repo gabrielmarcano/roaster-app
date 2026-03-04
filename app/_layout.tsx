@@ -73,17 +73,17 @@ export default function RootLayout() {
         <SessionProvider>
           <QueryClientProvider client={queryClient}>
             <SSEProvider>
-            <PaperProvider theme={paperTheme}>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="+not-found"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-              </Stack>
-              <StatusBar style="auto" />
-            </PaperProvider>
+              <PaperProvider theme={paperTheme}>
+                <Stack>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="+not-found"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+                </Stack>
+                <StatusBar style="auto" />
+              </PaperProvider>
             </SSEProvider>
           </QueryClientProvider>
         </SessionProvider>

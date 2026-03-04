@@ -152,7 +152,7 @@ export default function SettingsScreen() {
             label={isSystemOn ? 'On' : 'Off'}
             size="medium"
             icon={isSystemOn ? 'sync-circle' : 'power-sleep'}
-            disabled={isControllerConfigLoading}
+            disabled={isControllerConfigLoading || manageController.isPending}
             onPress={onToggleSystem}
           />
         </View>
@@ -166,7 +166,7 @@ export default function SettingsScreen() {
             variant="tertiary"
             size="medium"
             icon="stop"
-            disabled={isControllerConfigLoading}
+            disabled={isControllerConfigLoading || manageController.isPending}
             onPress={onStop}
           />
         </View>
@@ -180,6 +180,7 @@ export default function SettingsScreen() {
             color="rgb(224, 195, 163)"
             size="medium"
             icon="restore-alert"
+            disabled={restartMicro.isPending}
             onPress={onRestart}
           />
         </View>

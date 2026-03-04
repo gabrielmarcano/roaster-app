@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 export default function HomeScreen() {
-  const { eventSource, sensors } = useSSE();
+  const { reconnect, sensors } = useSSE();
   const { width: screenWidth } = useWindowDimensions();
 
   const [refreshing, setRefreshing] = useState(false);
@@ -23,27 +23,17 @@ export default function HomeScreen() {
   const [humidityData, setHumidityData] = useState<IDataChart['data'] | []>([]);
 
   const handleTemperatureData = (data: ISensor) => {
-    setTemperatureData((prev) => [
-      ...prev,
-      {
-        value: data.temperature,
-        timestamp: new Date().toTimeString(),
-      },
-    ]);
-
-    setTemperatureData((prev) => (prev.length > 17 ? prev.slice(-17) : prev));
+    setTemperatureData((prev) => {
+      const next = [...prev, { value: data.temperature, timestamp: new Date().toTimeString() }];
+      return next.length > 17 ? next.slice(-17) : next;
+    });
   };
 
   const handleHumidityData = (data: ISensor) => {
-    setHumidityData((prev) => [
-      ...prev,
-      {
-        value: data.humidity,
-        timestamp: new Date().toTimeString(),
-      },
-    ]);
-
-    setHumidityData((prev) => (prev.length > 8 ? prev.slice(-8) : prev));
+    setHumidityData((prev) => {
+      const next = [...prev, { value: data.humidity, timestamp: new Date().toTimeString() }];
+      return next.length > 8 ? next.slice(-8) : next;
+    });
   };
 
   useEffect(() => {
@@ -55,9 +45,8 @@ export default function HomeScreen() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    eventSource?.close();
-    eventSource?.open();
-    setRefreshing(false);
+    reconnect();
+    setTimeout(() => setRefreshing(false), 0);
   };
 
   const chartContainerWidth = screenWidth - 2 * 16;

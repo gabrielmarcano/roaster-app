@@ -2,37 +2,40 @@ import React from 'react';
 import { View } from 'react-native';
 import { Svg, Circle, Text as SVGText } from 'react-native-svg';
 
-const CircularProgress = (props: {
-  progressPercent?: any;
-  bgColor?: any;
-  pgColor?: any;
-  textSize?: any;
-  textColor?: any;
-  size?: any;
-  strokeWidth?: any;
-  text?: any;
-}) => {
+interface CircularProgressProps {
+  progressPercent?: number;
+  bgColor?: string;
+  pgColor?: string;
+  textSize?: number;
+  textColor?: string;
+  size: number;
+  strokeWidth: number;
+  text?: string;
+}
+
+const CircularProgress = (props: CircularProgressProps) => {
   const { size, strokeWidth, text } = props;
   const radius = (size - strokeWidth) / 2;
   const circum = radius * 2 * Math.PI;
-  const svgProgress = 100 - props.progressPercent;
+  const svgProgress = 100 - (props.progressPercent ?? 0);
+  const textSize = props.textSize ?? 10;
 
   return (
     <View style={{ margin: 5 }}>
       <Svg width={size} height={size}>
         {/* Background Circle */}
         <Circle
-          stroke={props.bgColor ? props.bgColor : '#f2f2f2'}
+          stroke={props.bgColor ?? '#f2f2f2'}
           fill="none"
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          {...{ strokeWidth }}
+          strokeWidth={strokeWidth}
         />
 
         {/* Progress Circle */}
         <Circle
-          stroke={props.pgColor ? props.pgColor : '#3b5998'}
+          stroke={props.pgColor ?? '#3b5998'}
           fill="none"
           cx={size / 2}
           cy={size / 2}
@@ -41,16 +44,16 @@ const CircularProgress = (props: {
           strokeDashoffset={radius * Math.PI * 2 * (svgProgress / 100)}
           strokeLinecap="butt"
           transform={`rotate(-90, ${size / 2}, ${size / 2})`}
-          {...{ strokeWidth }}
+          strokeWidth={strokeWidth}
         />
 
         {/* Text */}
         <SVGText
-          fontSize={props.textSize ? props.textSize : '10'}
+          fontSize={textSize}
           x={size / 2}
-          y={size / 2 + (props.textSize ? props.textSize / 2 - 1 : 5)}
+          y={size / 2 + (textSize / 2 - 1)}
           textAnchor="middle"
-          fill={props.textColor ? props.textColor : '#333333'}
+          fill={props.textColor ?? '#333333'}
         >
           {text}
         </SVGText>

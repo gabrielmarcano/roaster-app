@@ -1,4 +1,4 @@
-import { useContext, createContext, type PropsWithChildren } from 'react';
+import { useContext, createContext, type PropsWithChildren, useEffect } from 'react';
 import { useStorageState } from './useStorageState';
 import { configure } from '@/api/client';
 
@@ -29,11 +29,9 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
 
-  if (session) {
-    configure({
-      baseURL: `http://${session}`,
-    });
-  }
+  useEffect(() => {
+    configure({ baseURL: session ? `http://${session}` : '' });
+  }, [session]);
 
   return (
     <AuthContext.Provider

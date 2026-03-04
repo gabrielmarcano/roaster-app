@@ -143,7 +143,13 @@ export default function ControllersScreen() {
   };
 
   const onSaveConfig = () => {
-    if (!newConfigName || !newConfigTemperature || !newConfigTime) {
+    if (
+      !newConfigName ||
+      !newConfigTemperature ||
+      !newConfigTime ||
+      isNaN(Number(newConfigTemperature)) ||
+      isNaN(Number(newConfigTime))
+    ) {
       hideAddDialog();
       setNewConfigName(undefined);
       setNewConfigTemperature(undefined);
@@ -189,9 +195,16 @@ export default function ControllersScreen() {
       c: isMotorCOn,
     };
 
-    manageMotors.mutate({
-      [`motor_${motor}`]: !map[motor],
-    });
+    manageMotors.mutate(
+      { [`motor_${motor}`]: !map[motor] },
+      {
+        onSuccess(data) {
+          setIsMotorAOn(data.data.motor_a);
+          setIsMotorBOn(data.data.motor_b);
+          setIsMotorCOn(data.data.motor_c);
+        },
+      },
+    );
   };
 
   // Effects
@@ -310,6 +323,7 @@ export default function ControllersScreen() {
                 icon={isMotorAOn ? 'fire' : 'fire-off'}
                 style={isMotorAOn ? styles.icon : {}}
                 color={isMotorAOn ? 'rgb(114, 169, 124)' : undefined}
+                disabled={manageMotors.isPending}
                 onPress={() => onToggleMotor('a')}
               />
             </View>
@@ -324,6 +338,7 @@ export default function ControllersScreen() {
                 icon={isMotorBOn ? 'fan-speed-1' : 'fan-off'}
                 style={isMotorBOn ? styles.icon : {}}
                 color={isMotorBOn ? 'rgb(114, 169, 124)' : undefined}
+                disabled={manageMotors.isPending}
                 onPress={() => onToggleMotor('b')}
               />
             </View>
@@ -338,6 +353,7 @@ export default function ControllersScreen() {
                 icon={isMotorCOn ? 'fan-speed-2' : 'fan-off'}
                 style={isMotorCOn ? styles.icon : {}}
                 color={isMotorCOn ? 'rgb(114, 169, 124)' : undefined}
+                disabled={manageMotors.isPending}
                 onPress={() => onToggleMotor('c')}
               />
             </View>
@@ -368,10 +384,10 @@ export default function ControllersScreen() {
                 />
               </Dialog.Content>
               <Dialog.Actions>
-                <Button onPress={onCancelDialog}>
+                <Button onPress={onCancelDialog} disabled={updateControllerConfig.isPending}>
                   {i18n.t('Controller.Dialog.Cancel')}
                 </Button>
-                <Button onPress={onUseConfig}>
+                <Button onPress={onUseConfig} loading={updateControllerConfig.isPending} disabled={updateControllerConfig.isPending}>
                   {i18n.t('Controller.Dialog.Use')}
                 </Button>
               </Dialog.Actions>
@@ -417,10 +433,10 @@ export default function ControllersScreen() {
                 />
               </Dialog.Content>
               <Dialog.Actions>
-                <Button onPress={onCancelDialog}>
+                <Button onPress={onCancelDialog} disabled={updateInternalConfig.isPending}>
                   {i18n.t('Controller.Dialog.Cancel')}
                 </Button>
-                <Button onPress={onSaveConfig}>
+                <Button onPress={onSaveConfig} loading={updateInternalConfig.isPending} disabled={updateInternalConfig.isPending}>
                   {i18n.t('Controller.Dialog.Save')}
                 </Button>
               </Dialog.Actions>
@@ -444,10 +460,10 @@ export default function ControllersScreen() {
                 </Text>
               </Dialog.Content>
               <Dialog.Actions>
-                <Button onPress={onCancelDialog}>
+                <Button onPress={onCancelDialog} disabled={deleteInternalConfig.isPending}>
                   {i18n.t('Controller.Dialog.Cancel')}
                 </Button>
-                <Button onPress={() => onDeleteConfig(newConfigName)}>
+                <Button onPress={() => onDeleteConfig(newConfigName)} loading={deleteInternalConfig.isPending} disabled={deleteInternalConfig.isPending}>
                   {i18n.t('Controller.Dialog.Delete')}
                 </Button>
               </Dialog.Actions>

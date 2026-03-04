@@ -15,7 +15,7 @@ import CircularProgress from '@/components/CircularProgress';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TimerScreen() {
-  const { eventSource, time } = useSSE();
+  const { reconnect, time } = useSSE();
   const { width: screenWidth } = useWindowDimensions();
 
   const [refreshing, setRefreshing] = useState(false);
@@ -39,15 +39,15 @@ export default function TimerScreen() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    eventSource?.close();
-    eventSource?.open();
-    setPercentage(0);
-    setRefreshing(false);
+    reconnect();
+    setTimeout(() => setRefreshing(false), 0);
   };
 
   useEffect(() => {
     if (time?.total_time) {
-      setPercentage((time?.current_time * 100) / time?.total_time);
+      setPercentage((time.current_time * 100) / time.total_time);
+    } else {
+      setPercentage(0);
     }
   }, [time]);
 
@@ -75,10 +75,9 @@ export default function TimerScreen() {
           <View style={[styles.buttonsContainer, { width: circleSize }]}>
             <TouchableOpacity
               style={[styles.icon, { width: buttonWidth, height: buttonHeight }]}
-              onPress={() => {
-                handleReduceTime();
-              }}
+              onPress={handleReduceTime}
               activeOpacity={0.7}
+              disabled={updateTimer.isPending}
             >
               <MaterialCommunityIcons
                 name="rewind-60"
@@ -88,10 +87,9 @@ export default function TimerScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.icon, { width: buttonWidth, height: buttonHeight }]}
-              onPress={() => {
-                handleAddTime();
-              }}
+              onPress={handleAddTime}
               activeOpacity={0.7}
+              disabled={updateTimer.isPending}
             >
               <MaterialCommunityIcons
                 name="fast-forward-60"

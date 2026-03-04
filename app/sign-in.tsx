@@ -14,8 +14,6 @@ export default function SignIn() {
 
   const [visible, setVisible] = useState(false);
 
-  const onToggleSnackBar = () => setVisible(!visible);
-
   const onDismissSnackBar = () => setVisible(false);
 
   const checkIP = (ip: string) => {
@@ -47,7 +45,7 @@ export default function SignIn() {
               mode="contained"
               onPress={() => {
                 if (!checkIP(ip)) {
-                  onToggleSnackBar();
+                  setVisible(true);
                   return;
                 }
 

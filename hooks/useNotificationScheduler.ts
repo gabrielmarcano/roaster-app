@@ -20,7 +20,7 @@ export function useNotificationScheduler(time: ITimer | undefined) {
     if (time) {
       currentTimeRef.current = time.current_time;
     }
-  }, [time?.current_time]);
+  }, [time]);
 
   // Set up Android notification channel
   useEffect(() => {
@@ -46,6 +46,10 @@ export function useNotificationScheduler(time: ITimer | undefined) {
       Notifications.cancelAllScheduledNotificationsAsync();
       return;
     }
+
+    // Capture before the async closure so we never need a non-null assertion
+    // inside schedule() after awaits.
+    const totalTime = time.total_time;
 
     // Abort flag: if this effect re-runs before the async work finishes,
     // the cleanup sets cancelled=true and the stale schedule() bails out
@@ -80,7 +84,7 @@ export function useNotificationScheduler(time: ITimer | undefined) {
 
       for (const { enabled, offset, minutes } of preNotifs) {
         if (!enabled) continue;
-        if (time!.total_time <= offset) continue;
+        if (totalTime <= offset) continue;
         const triggerSeconds = remaining - offset;
         if (triggerSeconds <= 0) continue;
 
@@ -105,5 +109,9 @@ export function useNotificationScheduler(time: ITimer | undefined) {
     return () => {
       cancelled = true;
     };
+  // `time` is intentionally excluded — only total_time changes should trigger
+  // rescheduling. Including `time` would re-run every SSE tick (~1s), cancelling
+  // and recreating all notifications continuously.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [time?.total_time, notificationsEnabled, preNotif30, preNotif20, preNotif10]);
 }
