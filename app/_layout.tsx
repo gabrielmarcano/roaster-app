@@ -24,6 +24,7 @@ import { SessionProvider } from '@/contexts/sessionContext';
 import { SSEProvider } from '@/contexts/sseContext';
 import { LocaleProvider } from '@/contexts/localeContext';
 import { NotificationsProvider } from '@/contexts/notificationsContext';
+import { LocalConfigProvider } from '@/contexts/localConfigContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useReactQueryDevTools } from '@dev-plugins/react-query';
 
@@ -72,19 +73,21 @@ export default function RootLayout() {
       <NotificationsProvider>
         <SessionProvider>
           <QueryClientProvider client={queryClient}>
-            <SSEProvider>
-              <PaperProvider theme={paperTheme}>
-                <Stack>
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                  <Stack.Screen
-                    name="+not-found"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-                </Stack>
-                <StatusBar style="auto" />
-              </PaperProvider>
-            </SSEProvider>
+            <LocalConfigProvider>
+              <SSEProvider>
+                <PaperProvider theme={paperTheme}>
+                  <Stack>
+                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    <Stack.Screen
+                      name="+not-found"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+                  </Stack>
+                  <StatusBar style="auto" />
+                </PaperProvider>
+              </SSEProvider>
+            </LocalConfigProvider>
           </QueryClientProvider>
         </SessionProvider>
       </NotificationsProvider>

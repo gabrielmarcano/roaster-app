@@ -18,6 +18,7 @@ import {
 import EventSource from 'react-native-sse';
 import { useSession } from './sessionContext';
 import { useNotificationScheduler } from '@/hooks/useNotificationScheduler';
+import { useSyncPendingConfigs } from '@/hooks/useSyncPendingConfigs';
 
 const SSEContext = createContext<{
   reconnect: () => void;
@@ -56,6 +57,7 @@ export function SSEProvider({ children }: PropsWithChildren) {
   const [controller, setController] = useState<IControllerConfig | undefined>(undefined);
 
   useNotificationScheduler(time);
+  useSyncPendingConfigs(isConnected);
 
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const backoffRef = useRef(1000);

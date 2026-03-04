@@ -25,10 +25,12 @@ import { useCallback, useState } from 'react';
 import i18n from '@/i18n';
 import { IConfigEntry } from '@/api/types';
 import { useSSE } from '@/contexts/sseContext';
+import { useLocalConfigs } from '@/contexts/localConfigContext';
 import { useFocusEffect } from 'expo-router';
 
 export default function ControllersScreen() {
-  const { states } = useSSE();
+  const { states, isConnected } = useSSE();
+  const { localPendingConfigs, pendingNames, addPendingConfig, removePendingConfig } = useLocalConfigs();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -157,29 +159,40 @@ export default function ControllersScreen() {
       return;
     }
 
-    updateInternalConfig.mutate(
-      {
-        name: newConfigName
-          .trim()
-          .normalize('NFD')
-          .replaceAll(/[\u0300-\u036f]/g, ''),
-        starting_temperature: Number(newConfigTemperature),
-        time: Number(newConfigTime),
+    const config = {
+      name: newConfigName
+        .trim()
+        .normalize('NFD')
+        .replaceAll(/[\u0300-\u036f]/g, ''),
+      starting_temperature: Number(newConfigTemperature),
+      time: Number(newConfigTime),
+    };
+
+    if (!isConnected) {
+      addPendingConfig(config);
+      onCancelDialog();
+      return;
+    }
+
+    updateInternalConfig.mutate(config, {
+      onSuccess() {
+        onCancelDialog();
       },
-      {
-        onSuccess() {
-          onCancelDialog();
-        },
-        onError() {
-          console.log('Error saving config');
-          setNewConfigError(true);
-        },
+      onError() {
+        console.log('Error saving config');
+        setNewConfigError(true);
       },
-    );
+    });
   };
 
   const onDeleteConfig = (name: string | undefined) => {
     if (!name) return;
+
+    if (pendingNames.includes(name)) {
+      removePendingConfig(name);
+      onCancelDialog();
+      return;
+    }
 
     deleteInternalConfig.mutate(name, {
       onSuccess() {
@@ -243,22 +256,32 @@ export default function ControllersScreen() {
               return <List.Icon {...props} icon="folder" />;
             }}
           >
-            {internalConfigData?.data &&
-              Object.entries(internalConfigData.data).map(([name, config]) => (
-                <List.Item
-                  key={name}
-                  title={name}
-                  style={styles.listItem}
-                  left={(props) => <List.Icon {...props} icon="minus-thick" />}
-                  onLongPress={() => showDeleteDialog(name)}
-                  onPress={() => showUseDialog(config)}
-                  description={`${i18n.t('Controller.StartingTemperature')}: ${config.starting_temperature}, ${i18n.t('Controller.Time')}: ${new Date(
-                    (config.time ?? 0) * 1000,
-                  )
-                    .toISOString()
-                    .slice(11, 19)}`}
-                />
-              ))}
+            {Object.entries({
+                ...(internalConfigData?.data ?? {}),
+                ...localPendingConfigs,
+              }).map(([name, config]) => {
+                const isPending = pendingNames.includes(name);
+                return (
+                  <List.Item
+                    key={name}
+                    title={name}
+                    style={[styles.listItem, isPending && styles.listItemPending]}
+                    left={(props) => (
+                      <List.Icon
+                        {...props}
+                        icon={isPending ? 'cloud-upload-outline' : 'minus-thick'}
+                      />
+                    )}
+                    onLongPress={() => showDeleteDialog(name)}
+                    onPress={isPending ? undefined : () => showUseDialog(config)}
+                    description={`${i18n.t('Controller.StartingTemperature')}: ${config.starting_temperature}, ${i18n.t('Controller.Time')}: ${new Date(
+                      (config.time ?? 0) * 1000,
+                    )
+                      .toISOString()
+                      .slice(11, 19)}`}
+                  />
+                );
+              })}
             <List.Item
               style={styles.addNewConfigListItem}
               left={(props) => <List.Icon {...props} icon="plus" />}
@@ -531,6 +554,9 @@ const styles = StyleSheet.create({
   },
   listItem: {
     backgroundColor: 'rgba(28, 28, 28, 0.7)',
+  },
+  listItemPending: {
+    opacity: 0.65,
   },
   addNewConfigListItem: {
     backgroundColor: 'rgba(30, 23, 23, 0.7)',
