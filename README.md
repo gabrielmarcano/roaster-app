@@ -1,5 +1,5 @@
 <h1 align="center">
-  🔥 Roaster App
+  Roaster App
 </h1>
 
 <p align="center">
