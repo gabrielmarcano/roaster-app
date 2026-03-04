@@ -1,53 +1,141 @@
-> Edited for use in IDX on 07/09/12
+<h1 align="center">
+  🔥 Roaster App
+</h1>
 
-# Welcome to your Expo app 👋
+<p align="center">
+  A real-time mobile companion for the <a href="../pyroaster">pyroaster</a> ESP32 IoT roasting controller.
+</p>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+<p align="center">
+  <img src="https://img.shields.io/badge/Expo-55-000020?logo=expo&logoColor=white" />
+  <img src="https://img.shields.io/badge/React_Native-0.83-61DAFB?logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/platform-iOS%20%7C%20Android-lightgrey" />
+</p>
 
-## Get started
+---
 
-#### Android
+## Overview
 
-Android previews are defined as a `workspace.onStart` hook and started as a vscode task when the workspace is opened/started.
+Roaster App connects to a [pyroaster](../pyroaster) device over Wi-Fi and provides live monitoring and control of a coffee or nut roasting session. It receives real-time sensor data via Server-Sent Events (SSE) and lets you manage the timer, motors, and roasting presets from your phone.
 
-Note, if you can't find the task, either:
-- Rebuild the environment (using command palette: `IDX: Rebuild Environment`), or
-- Run `npm run android -- --tunnel` command manually run android and see the output in your terminal. The device should pick up this new command and switch to start displaying the output from it.
+---
 
-In the output of this command/task, you'll find options to open the app in a
+## Features
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **Live sensor dashboard** — real-time temperature and humidity charts updated every second via SSE
+- **Circular timer** — HH:MM:SS countdown with +60 s / −60 s controls
+- **Motor control** — toggle three independent motors (burner, fan, drum)
+- **Roasting presets** — create, apply, and delete named configs (starting temperature + duration)
+- **Offline preset creation** — presets created without a connection are queued locally and synced automatically on reconnect
+- **Push notifications** — timer-finish alert plus optional 30 / 20 / 10 minute pre-notifications
+- **Auto-reconnect** — exponential backoff (1 s → 30 s max) with a live connection indicator in the header
+- **Bilingual UI** — English and Spanish, switchable at runtime
+- **Dark Material Design 3** theme throughout
 
-You'll also find options to open the app's developer menu, reload the app, and more.
+---
 
-#### Web
+## Tech Stack
 
-Web previews will be started and managred automatically. Use the toolbar to manually refresh.
+| Layer | Library |
+|---|---|
+| Framework | [Expo](https://expo.dev) SDK 55 / React Native 0.83 |
+| Language | TypeScript 5.9 |
+| Navigation | Expo Router v4 (file-based) |
+| UI | [React Native Paper](https://reactnativepaper.com) (Material Design 3) |
+| Server state | [TanStack Query](https://tanstack.com/query) v5 |
+| HTTP | Axios |
+| Real-time | `react-native-sse` (SSE) |
+| Storage | `expo-secure-store` |
+| Notifications | `expo-notifications` |
+| Charts | `react-native-gifted-charts` |
+| i18n | `i18n-js` v4 |
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## Project Structure
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+roaster-app/
+├── app/
+│   ├── (tabs)/
+│   │   ├── index.tsx          # Dashboard — live sensor charts
+│   │   ├── controllers.tsx    # Motors + roasting presets
+│   │   ├── timer.tsx          # Circular countdown timer
+│   │   └── settings.tsx       # Language, notifications, device controls
+│   ├── sign-in.tsx            # Device IP entry / session setup
+│   └── _layout.tsx            # Root provider tree
+├── api/
+│   ├── api.ts                 # Axios request functions
+│   ├── queries.ts             # TanStack Query hooks
+│   └── types.ts               # Shared TypeScript types
+├── components/
+│   ├── CircularProgress.tsx   # SVG ring timer display
+│   ├── TemperatureChart.tsx
+│   └── HumidityChart.tsx
+├── contexts/
+│   ├── sseContext.tsx         # SSE connection + auto-reconnect
+│   ├── sessionContext.tsx     # Device IP / auth
+│   ├── localConfigContext.tsx # Offline preset queue
+│   ├── notificationsContext.tsx
+│   └── localeContext.tsx
+├── hooks/
+│   ├── useNotificationScheduler.ts
+│   └── useSyncPendingConfigs.ts
+└── i18n/index.ts              # English + Spanish translations
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## Getting Started
 
-To learn more about developing your project with Expo, look at the following resources:
+### Prerequisites
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- [Node.js](https://nodejs.org) ≥ 18
+- A physical device or emulator running iOS or Android
+- A [pyroaster](../pyroaster) device on the same Wi-Fi network (or its AP hotspot)
 
-## Join the community
+### Install
 
-Join our community of developers creating universal apps.
+```bash
+npm install
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Run (Expo Go / development)
+
+```bash
+npm start          # opens Expo DevTools
+npm run android    # launch on Android
+npm run ios        # launch on iOS
+```
+
+> **Note:** Push notifications require a custom dev build, not Expo Go.
+
+### Build (custom dev client via EAS)
+
+```bash
+npx eas build --profile development --platform android
+```
+
+---
+
+## Connecting to the Device
+
+On the sign-in screen, enter the IP address of your pyroaster device:
+
+- **AP mode (direct):** `192.168.4.1` — the ESP32 acts as its own hotspot
+- **STA mode (router):** the IP assigned by your router — check the device LCD or your router's DHCP table
+
+The session is stored securely on-device so you only need to sign in once.
+
+---
+
+## Backend
+
+This app is the companion to **[pyroaster](../pyroaster)**, a MicroPython server running on an ESP32. See its README for hardware setup, pin wiring, and firmware flashing instructions.
+
+---
+
+## License
+
+Private project — all rights reserved.
